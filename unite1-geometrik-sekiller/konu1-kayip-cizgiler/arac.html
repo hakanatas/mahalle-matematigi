@@ -162,6 +162,9 @@ canvas {
   background: rgba(99,102,241,.1); color: var(--color-indigo);
   padding: 2px 9px; border-radius: var(--radius-sm);
 }
+/* harflerin ÜZERİNDE çift ok: AB doğrusu gösterimi */
+.ustOk { display: inline-block; text-align: center; line-height: 1.02; }
+.ustOk::before { content: '↔'; display: block; font-size: .62em; line-height: .8; font-weight: 800; letter-spacing: .06em; }
 
 .satir { display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center; align-items: flex-start; }
 .panel {
@@ -419,8 +422,8 @@ const bilgiler={
  nokta:'<b>Nokta:</b> Kalemin kâğıda bir kez dokunmasıyla oluşan izdir. Eni, boyu ve derinliği <b>yoktur</b>. Tuvale dokun! Gösterim: <span class="sembol">A</span> → "A noktası"',
  parca:'<b>Doğru Parçası:</b> İki nokta arasında düz hizalanmış noktalar. İki noktaya tıkla, aradaki noktalar dolsun! Gösterim: <span class="sembol">[AB]</span> · Uzunluğu: <span class="sembol">|AB|</span>',
  isin:'<b>Işın:</b> Bir noktadan başlar, tek yönde <b>sonsuza</b> gider. Önce başlangıç noktasına, sonra yön noktasına tıkla! Gösterim: <span class="sembol">[AB</span> → "AB ışını"',
- dogru:'<b>Doğru:</b> İki ucu da <b>sonsuza</b> giden düz çizgi. İki noktaya tıkla! Gösterim: <span class="sembol">AB</span> (üzerinde çift ok) → "AB doğrusu"',
- dikme:'<b>Dikme:</b> Doğruya dışındaki bir noktadan <b>dik</b> çizilen doğru parçası — en kısa yol budur! Önce doğru için iki noktaya, sonra dışarıdaki noktaya tıkla. Gösterim: <span class="sembol">[AB] ⊥ CD</span>'
+ dogru:'<b>Doğru:</b> İki ucu da <b>sonsuza</b> giden düz çizgi. İki noktaya tıkla! Gösterim: <span class="sembol"><span class="ustOk">AB</span></span> → "AB doğrusu"',
+ dikme:'<b>Dikme:</b> Doğruya dışındaki bir noktadan <b>dik</b> çizilen doğru parçası — en kısa yol budur! Önce doğru için iki noktaya, sonra dışarıdaki noktaya tıkla. Gösterim: <span class="sembol">[AB] ⊥ <span class="ustOk">CD</span></span>'
 };
 function modSec(m,btn){ mod=m; tiklar=[];
   document.querySelectorAll('#s0 .araclar button').forEach(b=>b.classList.remove('secili'));
@@ -440,14 +443,29 @@ tuval.addEventListener('pointerdown',e=>{
 });
 
 function noktaCiz(p,renk=R_RECHER){ ctx.fillStyle=renk; ctx.beginPath(); ctx.arc(p.x,p.y,6,0,7); ctx.fill();
-  ctx.fillStyle=R_KOYU; ctx.font='bold 20px Georgia'; ctx.fillText(p.h,p.x+10,p.y-10); }
-function uzat(a,b){ const dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1, k=1200/L;
-  return {x:b.x+dx*k, y:b.y+dy*k}; }
-function ok(a,b,renk){ const ang=Math.atan2(b.y-a.y,b.x-a.x);
-  const kx=Math.min(Math.max(b.x,15),tuval.width-15), ky=Math.min(Math.max(b.y,15),tuval.height-15);
+  ctx.font='bold 20px Georgia';
+  let lx=p.x+10, ly=p.y-10;                       // harf tuval dışına taşmasın
+  if(lx>tuval.width-24) lx=p.x-26;
+  if(ly<24) ly=p.y+28;
+  if(ly>tuval.height-6) ly=p.y-10;
+  ctx.fillStyle=R_KOYU; ctx.fillText(p.h,lx,ly); }
+/* a'dan b yönünde giden ışının, kenardan KENAR_PAY kadar içerideki çerçeveyi kestiği nokta */
+const KENAR_PAY=34;
+function kenarKes(a,b){ const dx=b.x-a.x, dy=b.y-a.y;
+  if(!dx && !dy) return {x:b.x,y:b.y};
+  let t=Infinity;
+  if(dx>0) t=Math.min(t,(tuval.width-KENAR_PAY-a.x)/dx); else if(dx<0) t=Math.min(t,(KENAR_PAY-a.x)/dx);
+  if(dy>0) t=Math.min(t,(tuval.height-KENAR_PAY-a.y)/dy); else if(dy<0) t=Math.min(t,(KENAR_PAY-a.y)/dy);
+  if(!isFinite(t)||t<0) t=0;
+  return {x:a.x+dx*t, y:a.y+dy*t}; }
+/* büyük, dolgun ok ucu — çizgi doğrultusunda */
+function ok(a,uc,renk){ const ang=Math.atan2(uc.y-a.y,uc.x-a.x), B=26;
   ctx.fillStyle=renk; ctx.beginPath();
-  ctx.moveTo(kx,ky); ctx.lineTo(kx-14*Math.cos(ang-0.4),ky-14*Math.sin(ang-0.4));
-  ctx.lineTo(kx-14*Math.cos(ang+0.4),ky-14*Math.sin(ang+0.4)); ctx.fill(); }
+  ctx.moveTo(uc.x+8*Math.cos(ang),uc.y+8*Math.sin(ang));
+  ctx.lineTo(uc.x-B*Math.cos(ang-0.42),uc.y-B*Math.sin(ang-0.42));
+  ctx.lineTo(uc.x-B*.45*Math.cos(ang),uc.y-B*.45*Math.sin(ang));
+  ctx.lineTo(uc.x-B*Math.cos(ang+0.42),uc.y-B*Math.sin(ang+0.42));
+  ctx.closePath(); ctx.fill(); }
 
 function ciz(){
   ctx.clearRect(0,0,tuval.width,tuval.height);
@@ -460,12 +478,12 @@ function ciz(){
     ctx.save(); ctx.beginPath(); ctx.rect(0,0,tuval.width,tuval.height); ctx.clip();
     if(c.tip==='parca'){ ctx.strokeStyle=renkler.parca; ctx.beginPath(); ctx.moveTo(n[0].x,n[0].y); ctx.lineTo(n[1].x,n[1].y); ctx.stroke();
       etiket(`[${n[0].h}${n[1].h}]`,n); }
-    if(c.tip==='isin'){ const u=uzat(n[0],n[1]); ctx.strokeStyle=renkler.isin; ctx.beginPath(); ctx.moveTo(n[0].x,n[0].y); ctx.lineTo(u.x,u.y); ctx.stroke(); ok(n[0],u,renkler.isin);
+    if(c.tip==='isin'){ const u=kenarKes(n[0],n[1]); ctx.strokeStyle=renkler.isin; ctx.beginPath(); ctx.moveTo(n[0].x,n[0].y); ctx.lineTo(u.x,u.y); ctx.stroke(); ok(n[0],u,renkler.isin);
       etiket(`[${n[0].h}${n[1].h}`,n); }
-    if(c.tip==='dogru'){ const u1=uzat(n[1],n[0]), u2=uzat(n[0],n[1]); ctx.strokeStyle=renkler.dogru; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke(); ok(n[0],u1,renkler.dogru); ok(n[0],u2,renkler.dogru);
+    if(c.tip==='dogru'){ const u1=kenarKes(n[1],n[0]), u2=kenarKes(n[0],n[1]); ctx.strokeStyle=renkler.dogru; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke(); ok(n[0],u1,renkler.dogru); ok(n[1],u2,renkler.dogru);
       etiket(`${n[0].h}${n[1].h} doğrusu`,n); }
     if(c.tip==='dikme'){ const A=n[0],B=n[1],P=n[2];
-      const u1=uzat(B,A),u2=uzat(A,B); ctx.strokeStyle=R_SOLUK; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke();
+      const u1=kenarKes(B,A),u2=kenarKes(A,B); ctx.strokeStyle=R_SOLUK; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke();
       const dx=B.x-A.x, dy=B.y-A.y, t=((P.x-A.x)*dx+(P.y-A.y)*dy)/(dx*dx+dy*dy);
       const H={x:A.x+t*dx, y:A.y+t*dy};
       ctx.strokeStyle=renkler.dikme; ctx.beginPath(); ctx.moveTo(P.x,P.y); ctx.lineTo(H.x,H.y); ctx.stroke();
@@ -479,8 +497,21 @@ function ciz(){
   });
   tiklar.forEach(p=>noktaCiz(p,R_GOLD));
 }
-function etiket(t,n){ const x=(n[0].x+(n[1]?n[1].x:n[0].x))/2, y=(n[0].y+(n[1]?n[1].y:n[0].y))/2;
-  ctx.font='bold 18px Georgia'; ctx.fillStyle=R_GOLD; ctx.fillText(t,x+12,y-12); }
+function etiket(t,n){ const a=n[0], b=n[1]||n[0];
+  let x=(a.x+b.x)/2, y=(a.y+b.y)/2;
+  // etiketi çizgiye dik yönde (yukarı bakan tarafa) kaydır → harflerle çakışmasın
+  const dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy);
+  let nx=0, ny=-1;
+  if(L>0){ nx=-dy/L; ny=dx/L; if(ny>0){ nx=-nx; ny=-ny; } }
+  x+=nx*26; y+=ny*26;
+  ctx.font='bold 17px Georgia';
+  const w=ctx.measureText(t).width;
+  x=Math.min(Math.max(x-w/2,6),tuval.width-w-6);      // tuval içinde kal
+  y=Math.min(Math.max(y,24),tuval.height-10);
+  ctx.fillStyle='rgba(255,255,255,.88)';               // okunurluk için arka plan şeridi
+  ctx.fillRect(x-6,y-17,w+12,24);
+  ctx.strokeStyle='rgba(194,65,12,.3)'; ctx.lineWidth=1; ctx.strokeRect(x-6,y-17,w+12,24); ctx.lineWidth=4;
+  ctx.fillStyle=R_GOLD; ctx.fillText(t,x,y); }
 ciz();
 
 /* ---------- 2) çember ---------- */
@@ -516,13 +547,13 @@ cemberGuncelle();
 const havuz=[
  {g:'[AB]', d:'AB doğru parçası'},
  {g:'[AB', d:'AB ışını'},
- {g:'AB ↔', d:'AB doğrusu'},
+ {g:'<span class="ustOk">AB</span>', d:'AB doğrusu'},
  {g:'|AB|', d:'AB doğru parçasının uzunluğu'},
  {g:'A •', d:'A noktası'},
  {g:'∠ABC', d:'ABC açısı'},
  {g:'r', d:'Yarıçap'},
  {g:'R', d:'Çap'},
- {g:'[KL] ⊥ MN', d:'KL doğru parçası MN doğrusuna diktir'},
+ {g:'[KL] ⊥ <span class="ustOk">MN</span>', d:'KL doğru parçası MN doğrusuna diktir'},
  {g:'M ⊙', d:'Çemberin merkezi'}
 ];
 let sIdx=0, puan1=0, sirali=[];
@@ -533,7 +564,7 @@ function sembolSoru(){
   if(sIdx>=10){ bitir('secenekler','soruKarti',puan1,10,sembolBaslat); return; }
   const dogru=sirali[sIdx];
   document.getElementById('soruNo').textContent=sIdx+1;
-  document.getElementById('soruKarti').textContent=dogru.g;
+  document.getElementById('soruKarti').innerHTML=dogru.g;
   document.getElementById('geribildirim').textContent='';
   const yanlislar=karistir(havuz.filter(h=>h.d!==dogru.d)).slice(0,3);
   const secler=karistir([dogru,...yanlislar]);
