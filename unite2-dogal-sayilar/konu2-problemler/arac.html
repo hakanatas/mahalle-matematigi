@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problem Atölyesi — Gerçek Yaşam Problemleri (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1060px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:880px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm);flex-wrap:wrap}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-xs);max-width:820px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1.05rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-emerald-glow);animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-recher-glow);animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.2rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.2rem;font-weight:700;max-width:880px;margin:0 auto var(--space-sm);text-align:center}
+.soruMetin .islem{font-family:var(--font-accent);font-size:1.9rem;font-weight:900;color:var(--color-indigo);display:block;margin-top:.4rem}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+input[type=range]{width:280px;accent-color:var(--color-emerald);height:28px}
+.buyukDeger{font-family:var(--font-accent);font-size:1.8rem;font-weight:900;color:var(--color-indigo);text-align:center;margin-top:var(--space-xs)}
+/* problem sihirbazı */
+.problemKart{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-left:6px solid var(--color-indigo);border-radius:var(--radius-md);padding:var(--space-md);max-width:880px;margin:0 auto var(--space-sm);font-size:1.05rem}
+.adimBar{display:flex;gap:.4rem;justify-content:center;margin-bottom:var(--space-sm);flex-wrap:wrap}
+.adimBar span{font-family:var(--font-headings);font-weight:700;font-size:.85rem;padding:.35rem 1rem;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);color:var(--color-text-muted)}
+.adimBar span.aktifAdim{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent}
+.adimBar span.bitti{background:rgba(5,150,105,.15);color:var(--color-emerald-dark);border-color:rgba(5,150,105,.3)}
+.adimSoru{text-align:center;font-family:var(--font-headings);font-weight:700;font-size:1.1rem;margin-bottom:var(--space-xs)}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🧮 PROBLEM <span class="vurgu">ATÖLYESİ</span></h1>
+    <p>2. Tema · Gerçek Yaşam Problemleri — Zihinden İşlem, Tahmin ve Adım Adım Çözüm</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">⚡ Zihinden İşlem</button>
+    <button onclick="sayfaAc(1,this)">🎯 Tahmin Ustası</button>
+    <button onclick="sayfaAc(2,this)">🪜 Adım Adım Çöz</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) ZİHİNDEN İŞLEM -->
+  <div class="sayfa aktif" id="s0">
+    <div class="skorbar"><span>⭐ Puan: <b id="zPuan">0</b></span><span>🔥 Seri: <b id="zSeri">0</b></span><span>❓ Soru: <b id="zNo">1</b>/12</span></div>
+    <div class="soruMetin">Zihinden hesapla, kağıt kalem yasak! ⚡<span class="islem" id="zIslem"></span></div>
+    <div class="secenekler" id="zSecenek"></div>
+    <div class="geribildirim" id="zGeri"></div>
+    <div class="bilgi"><b>Zihinden işlem hileleri:</b> 10 ile çarpmak = sona bir sıfır eklemek. 100 ile çarpmak = iki sıfır. 10'a bölmek = bir sıfır silmek. 19 eklemek = 20 ekle, 1 çıkar. 27 çıkarmak = 30 çıkar, 3 ekle!</div>
+  </div>
+
+  <!-- 2) TAHMİN USTASI -->
+  <div class="sayfa" id="s1">
+    <div class="skorbar"><span>⭐ Puan: <b id="tPuan">0</b></span><span>❓ Soru: <b id="tNo">1</b>/8</span></div>
+    <div class="soruMetin">Sonucu TAHMİN et — hesaplamak yok, yuvarlamak var! 🎯<span class="islem" id="tIslem"></span></div>
+    <div style="text-align:center;margin-top:12px">
+      <input type="range" id="tSlider" min="0" max="1000" value="500" oninput="tGosterGuncelle()">
+      <div class="buyukDeger">Tahminim: <span id="tGoster">500</span></div>
+      <button class="tekrar" id="tBtn" onclick="tahminEt()">Tahmin Et! 🎯</button>
+    </div>
+    <div class="geribildirim" id="tGeri"></div>
+    <div class="bilgi"><b>Tahmin stratejisi:</b> Sayıları en yakın onluğa/yüzlüğe yuvarla, sonra işlemi yap. 475 × 9 için → 500 × 9 = 4500 civarı. Dedenin deyimiyle: "Aşağı yukarı bilen, kesin hesapta şaşmaz."</div>
+  </div>
+
+  <!-- 3) ADIM ADIM ÇÖZ -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="pPuan">0</b></span><span>📋 Problem: <b id="pNo">1</b>/3</span></div>
+    <div class="adimBar" id="adimBar"></div>
+    <div class="problemKart" id="problemMetin"></div>
+    <div class="adimSoru" id="adimSoru"></div>
+    <div class="secenekler" id="pSecenek"></div>
+    <div class="geribildirim" id="pGeri"></div>
+  </div>
+
+  <!-- 4) MİNİ SINAV -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 2. Tema: Sayılar ve Nicelikler · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+function noktali(n){ return n.toLocaleString('tr-TR'); }
+
+/* ---------- 1) zihinden işlem ---------- */
+let zIdx=0,zPuan=0,zSeri=0,zDogru=0;
+function zUret(){
+  const tip=Math.floor(Math.random()*6);
+  let m,s;
+  if(tip===0){ const a=(2+Math.floor(Math.random()*88)); m=a+' × 10'; s=a*10; }
+  else if(tip===1){ const a=(2+Math.floor(Math.random()*88)); m=a+' × 100'; s=a*100; }
+  else if(tip===2){ const a=(1+Math.floor(Math.random()*80))*10; m=a+' ÷ 10'; s=a/10; }
+  else if(tip===3){ const a=(1+Math.floor(Math.random()*9))*10, b=(1+Math.floor(Math.random()*9))*10; m=a+' × '+b; s=a*b; }
+  else if(tip===4){ const a=25+Math.floor(Math.random()*60), b=9+10*Math.floor(Math.random()*3); m=a+' + '+b; s=a+b; }
+  else { const a=50+Math.floor(Math.random()*49), b=11+Math.floor(Math.random()*28); m=a+' − '+b; s=a-b; }
+  return {m,s};
+}
+function zBaslat(){ zIdx=0;zPuan=0;zSeri=0;
+  document.getElementById('zPuan').textContent=0; document.getElementById('zSeri').textContent=0; zSoru(); }
+function zSoru(){
+  if(zIdx>=12){ document.getElementById('zSecenek').innerHTML='';
+    document.getElementById('zIslem').textContent='🏁 Bitti! '+zPuan+' puan';
+    document.getElementById('zGeri').innerHTML='<button class="tekrar" onclick="zBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('zNo').textContent=zIdx+1;
+  document.getElementById('zGeri').textContent='';
+  const q=zUret(); zDogru=q.s;
+  document.getElementById('zIslem').textContent=q.m+' = ?';
+  const secSet=new Set([q.s]);
+  while(secSet.size<4){
+    const sapma=[q.s+10,q.s-10,q.s*10,Math.max(1,Math.floor(q.s/10)),q.s+100,q.s-1,q.s+1][Math.floor(Math.random()*7)];
+    if(sapma>0&&sapma!==q.s) secSet.add(sapma);
+  }
+  const kap=document.getElementById('zSecenek'); kap.innerHTML='';
+  karistir([...secSet]).forEach(m=>{
+    const b=document.createElement('button'); b.textContent=noktali(m);
+    b.onclick=()=>{
+      if(m===zDogru){ b.classList.add('dogru'); zSeri++; zPuan+=10+(zSeri>=3?5:0);
+        document.getElementById('zPuan').textContent=zPuan; document.getElementById('zSeri').textContent=zSeri;
+        document.getElementById('zGeri').innerHTML='🎉 <span class="gb-dogru">Doğru!'+(zSeri>=3?' Seri bonusu +5!':'')+'</span>'; }
+      else { b.classList.add('yanlis'); zSeri=0; document.getElementById('zSeri').textContent=0;
+        document.getElementById('zGeri').innerHTML='😅 <span class="gb-yanlis">Doğrusu: '+noktali(zDogru)+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      zIdx++; setTimeout(zSoru,1200);
+    };
+    kap.appendChild(b);
+  });
+}
+zBaslat();
+
+/* ---------- 2) tahmin ustası ---------- */
+let tIdx=0,tPuan=0,tGercek=0;
+function tGosterGuncelle(){ document.getElementById('tGoster').textContent=noktali(+document.getElementById('tSlider').value); }
+function tBaslat(){ tIdx=0;tPuan=0;document.getElementById('tPuan').textContent=0;
+  document.getElementById('tBtn').disabled=false; tSoru(); }
+function tSoru(){
+  if(tIdx>=8){ document.getElementById('tIslem').textContent='🏁 Bitti! '+tPuan+' puan';
+    document.getElementById('tGeri').innerHTML='<button class="tekrar" onclick="tBaslat()">Tekrar Oyna 🔄</button>';
+    document.getElementById('tBtn').disabled=true; return; }
+  document.getElementById('tNo').textContent=tIdx+1;
+  document.getElementById('tGeri').textContent='';
+  const tip=Math.floor(Math.random()*3);
+  let m;
+  if(tip===0){ const a=150+Math.floor(Math.random()*700), b=80+Math.floor(Math.random()*600); m=a+' + '+b; tGercek=a+b; }
+  else if(tip===1){ const a=500+Math.floor(Math.random()*500), b=100+Math.floor(Math.random()*380); m=a+' − '+b; tGercek=a-b; }
+  else { const a=15+Math.floor(Math.random()*80), b=4+Math.floor(Math.random()*8); m=a+' × '+b; tGercek=a*b; }
+  document.getElementById('tIslem').textContent=m+' ≈ ?';
+  const sl=document.getElementById('tSlider');
+  sl.min=Math.max(0,Math.floor(tGercek*0.3)); sl.max=Math.ceil(tGercek*1.7); sl.value=Math.floor((+sl.min + +sl.max)/2);
+  tGosterGuncelle();
+}
+function tahminEt(){
+  const tahmin=+document.getElementById('tSlider').value;
+  const fark=Math.abs(tahmin-tGercek), oran=fark/tGercek;
+  let p=0,msj='';
+  if(oran<=0.05){p=20;msj='🎯 Usta tahmini! (%5 içinde)';}
+  else if(oran<=0.15){p=10;msj='👍 Güzel yuvarlamışsın!';}
+  else msj='😅 Biraz uzak kaldı!';
+  tPuan+=p; document.getElementById('tPuan').textContent=tPuan;
+  document.getElementById('tGeri').innerHTML='<span class="'+(p>0?'gb-dogru':'gb-yanlis')+'">'+msj+' Gerçek sonuç: '+noktali(tGercek)+' → +'+p+' puan</span>';
+  tIdx++; setTimeout(tSoru,2000);
+}
+tBaslat();
+
+/* ---------- 3) adım adım çöz ---------- */
+const ADIMLAR=['1. Anla','2. Planla','3. Tahmin Et','4. Çöz','5. Kontrol'];
+const problemler=[
+ {metin:'🌳 <b>Kâğıt Kampanyası:</b> Okulumuz atık kâğıt topluyor. Her <b>1000 kg</b> kâğıt, <b>17 ağacı</b> kesilmekten kurtarıyor. Okul bir yılda <b>7000 kg</b> kâğıt topladı. Kaç ağaç kurtarıldı?',
+  adimlar:[
+   {soru:'ANLA: Problemde ne isteniyor?', sec:['Toplanan kâğıdın ağırlığı','Kurtarılan ağaç sayısı','Kesilen ağaç sayısı','Okulun öğrenci sayısı'], d:1},
+   {soru:'PLANLA: Hangi işlem bizi sonuca götürür?', sec:['7000 + 17','7000 − 1000','(7000 ÷ 1000) × 17','7000 × 1000'], d:2},
+   {soru:'TAHMİN ET: Sonuç yaklaşık ne kadar olur?', sec:['10\'dan az','100 civarı','1000 civarı','7000\'den fazla'], d:1},
+   {soru:'ÇÖZ: 7000 ÷ 1000 = 7 ve 7 × 17 = ?', sec:['84','109','119','129'], d:2},
+   {soru:'KONTROL: 119 mantıklı mı? Neden?', sec:['Hayır, ağaç sayısı kâğıttan çok olmalı','Evet; 7 bin kilo × 17 ağaç ≈ 120, tahminimize uyuyor','Hayır, sonuç 1000\'den büyük olmalıydı','Kontrol etmeye gerek yok'], d:1}
+  ]},
+ {metin:'💧 <b>Su Deposu:</b> Depoda <b>1567 litre</b> su var. Sulama için <b>234 litre</b>, yangın tatbikatı için <b>1089 litre</b> kullanıldı. Depoda kaç litre su kaldı?',
+  adimlar:[
+   {soru:'ANLA: Verilenler neler?', sec:['Sadece depodaki su','Depodaki su ve iki kullanım miktarı','Sadece kullanılan sular','Deponun kaç kişilik olduğu'], d:1},
+   {soru:'PLANLA: Hangi yol doğru?', sec:['Hepsini topla','Depodaki sudan iki kullanımı çıkar','Kullanımları çarp','Depoyu ikiye böl'], d:1},
+   {soru:'TAHMİN ET: Yuvarlayarak: 1600 − 200 − 1100 ≈ ?', sec:['100 civarı','300 civarı','1000 civarı','1500 civarı'], d:1},
+   {soru:'ÇÖZ: 1567 − 234 − 1089 = ?', sec:['244','344','254','144'], d:0},
+   {soru:'KONTROL: Nasıl sağlarız?', sec:['244 + 234 + 1089 = 1567 mi diye toplarız','244 × 2 yaparız','1567\'yi ikiye böleriz','Kontrole gerek yok'], d:0}
+  ]},
+ {metin:'🛒 <b>Bütçe Hesabı:</b> Nil Hanım\'ın <b>30 000 TL</b> bütçesi var. Almak istediği ürünler: ütü <b>9750 TL</b>, robot süpürge <b>16 999 TL</b>, kahve makinesi <b>5550 TL</b>. Bütçesi yeterli mi?',
+  adimlar:[
+   {soru:'ANLA: Neyi karşılaştıracağız?', sec:['Ürünlerin markalarını','Toplam fiyat ile bütçeyi','En pahalı ürünle bütçeyi','Ürün sayısı ile bütçeyi'], d:1},
+   {soru:'PLANLA: İlk iş ne?', sec:['Üç fiyatı toplamak','Bütçeden en ucuzu çıkarmak','Fiyatları çarpmak','En pahalıyı seçmek'], d:0},
+   {soru:'TAHMİN ET: Yuvarla: 10 000 + 17 000 + 5500 ≈ ?', sec:['22 000','27 000','32 500','40 000'], d:2},
+   {soru:'ÇÖZ: 9750 + 16 999 + 5550 = ?', sec:['30 000','31 299','32 299','33 299'], d:2},
+   {soru:'KONTROL: Karar ne olmalı?', sec:['32 299 < 30 000, bütçe yeter','32 299 > 30 000, bütçe YETMEZ','Eşitler, tam yetiyor','Fiyatlar yanlış'], d:1}
+  ]}
+];
+let pIdx=0,pAdim=0,pPuan=0;
+function pBaslat(){ pIdx=0;pAdim=0;pPuan=0;document.getElementById('pPuan').textContent=0; pGoster(); }
+function adimBarCiz(){
+  const bar=document.getElementById('adimBar'); bar.innerHTML='';
+  ADIMLAR.forEach((a,i)=>{
+    const s=document.createElement('span'); s.textContent=a;
+    if(i<pAdim)s.classList.add('bitti'); if(i===pAdim)s.classList.add('aktifAdim');
+    bar.appendChild(s);
+  });
+}
+function pGoster(){
+  if(pIdx>=problemler.length){
+    document.getElementById('problemMetin').innerHTML='🏁 <b>Üç problemi de adım adım çözdün!</b> Toplam '+pPuan+' puan. Artık problem çözme adımları cebinde: Anla → Planla → Tahmin Et → Çöz → Kontrol Et!';
+    document.getElementById('adimSoru').textContent=''; document.getElementById('adimBar').innerHTML='';
+    document.getElementById('pSecenek').innerHTML='';
+    document.getElementById('pGeri').innerHTML='<button class="tekrar" onclick="pBaslat()">Baştan Çöz 🔄</button>'; return;
+  }
+  document.getElementById('pNo').textContent=pIdx+1;
+  const pr=problemler[pIdx];
+  document.getElementById('problemMetin').innerHTML=pr.metin;
+  adimBarCiz();
+  const ad=pr.adimlar[pAdim];
+  document.getElementById('adimSoru').textContent=ad.soru;
+  document.getElementById('pGeri').textContent='';
+  const kap=document.getElementById('pSecenek'); kap.innerHTML='';
+  ad.sec.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===ad.d){ b.classList.add('dogru'); pPuan+=10; document.getElementById('pPuan').textContent=pPuan;
+        document.getElementById('pGeri').innerHTML='🎉 <span class="gb-dogru">Doğru adım!</span>';
+        kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+        pAdim++;
+        if(pAdim>=pr.adimlar.length){ pAdim=0; pIdx++; }
+        setTimeout(pGoster,1300);
+      } else { b.classList.add('yanlis'); b.disabled=true;
+        document.getElementById('pGeri').innerHTML='😅 <span class="gb-yanlis">Tekrar düşün, bu adımda takılma!</span>'; }
+    };
+    kap.appendChild(b);
+  });
+}
+pBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'Bir depodaki 1567 litre suyun 234 ve 1089 litresi kullanıldı. Kaç litre kaldı?', c:['144','244','344','444'], d:1},
+ {s:'Ece 60 gün boyunca günde 12 sayfa okuyarak kitabı bitirdi. Günde 40 sayfa okusaydı kaç günde bitirirdi? (60×12=720)', c:['15','18','20','24'], d:1},
+ {s:'Rüzgâr türbinleri 1732, 1583 ve 875 evin elektriğini karşılıyor. Toplam kaç ev?', c:['4190','4090','3190','4290'], d:0},
+ {s:'2620 evlik ilçe için hangi iki türbin yeterlidir? (1732, 1583, 875)', c:['1583 + 875 = 2458','1732 + 875 = 2607','1732 + 1583 = 3315','Hiçbiri yetmez'], d:2},
+ {s:'44 × 10 kaçtır?', c:['440','404','4400','44'], d:0},
+ {s:'475 × 9 işleminin sonucuna EN YAKIN tahmin hangisi? (475→500 yuvarla)', c:['3500','4500','5500','9000'], d:1},
+ {s:'12 414 + ? = 21 213 ise ? kaçtır?', c:['8799','8899','9799','7899'], d:0},
+ {s:'Büşra Hanım 1. hafta 34 850, 2. hafta 45 920 adım attı. Fark kaç?', c:['10 070','11 070','11 170','12 070'], d:1}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

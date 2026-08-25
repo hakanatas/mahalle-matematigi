@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olasılık Panayırı — Veriden Olasılığa (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1060px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.kaydirici{display:flex;gap:var(--space-sm);justify-content:center;flex-wrap:wrap;margin-bottom:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:.9rem}
+canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:inset 0 2px 8px rgba(31,38,135,.05);touch-action:none}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:880px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.15rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.15rem;font-weight:700;max-width:880px;margin:0 auto var(--space-sm);text-align:center}
+.ifadeBuyuk{font-family:var(--font-accent);font-size:1.5rem;font-weight:900;text-align:center;margin:var(--space-sm) auto;color:var(--color-indigo);max-width:760px}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+.aksiyon{display:flex;gap:var(--space-xs);justify-content:center;flex-wrap:wrap;margin-top:var(--space-sm)}
+.aksiyon button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;box-shadow:0 0 12px var(--color-emerald-glow);transition:var(--transition-smooth)}
+.aksiyon button:hover{transform:translateY(-2px)}
+.aksiyon button.turuncu{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold))}
+input[type=range]{width:150px;accent-color:var(--color-emerald);height:26px}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🎡 OLASILIK <span class="vurgu">PANAYIRI</span></h1>
+    <p>7. Tema · Veriden Olasılığa — Olasılık Spektrumu, Kesin ve İmkânsız Olaylar, Adil Oyun</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">🌈 Olasılık Spektrumu</button>
+    <button onclick="sayfaAc(1,this)">🎒 Torba Deneyi</button>
+    <button onclick="sayfaAc(2,this)">⚖️ Adil Oyun</button>
+    <button onclick="sayfaAc(3,this)">🕵️ Olay Avı</button>
+    <button onclick="sayfaAc(4,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) SPEKTRUM -->
+  <div class="sayfa aktif" id="s0">
+    <p class="soruMetin">Kaydırıcıyı oynat: olasılık ibresi spektrumda gezsin. 0 = imkânsız, 1 = kesin, arası hayat! 🌈</p>
+    <div class="kaydirici">
+      <label style="color:#4338ca">🎯 Olasılık: <input type="range" id="spV" min="0" max="100" value="50" oninput="spektrumCiz()"> <b id="spVV">0,50</b></label>
+    </div>
+    <canvas class="tuvalC" id="spTuval" width="860" height="300"></canvas>
+    <div class="secenekler" id="spOrnek" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));max-width:880px"></div>
+    <div class="bilgi"><b>Olasılık spektrumu:</b> Bir olayın olasılığı <b>0 ile 1 arasındadır</b> (0 ve 1 dâhil). 0 = imkânsız (%0), 1 = kesin (%100), 1/2 = eşit olasılık (%50). 0'a yakınsa <b>az olası</b>, 1'e yakınsa <b>çok olası</b>. Aynı değer kesirle, ondalıkla veya yüzdeyle yazılabilir!</div>
+  </div>
+
+  <!-- 2) TORBA DENEYİ -->
+  <div class="sayfa" id="s1">
+    <p class="soruMetin">Torbaya top koy, çek çek gör: hangi renk daha olası? Duygunla değil, SAYIYLA konuş! 🎒</p>
+    <div class="kaydirici">
+      <label style="color:#be123c">🔴 Kırmızı: <input type="range" id="tKir" min="0" max="10" value="3" oninput="torbaAyar()"> <b id="tKirV">3</b></label>
+      <label style="color:#ca8a04">🟡 Sarı: <input type="range" id="tSar" min="0" max="10" value="1" oninput="torbaAyar()"> <b id="tSarV">1</b></label>
+    </div>
+    <canvas class="tuvalC" id="tTuval" width="860" height="360"></canvas>
+    <div class="aksiyon">
+      <button onclick="topCek(1)">🎲 1 Top Çek</button>
+      <button onclick="topCek(20)">🎲🎲 20 Top Çek</button>
+      <button class="turuncu" onclick="torbaSifirla()">🔄 Sayacı Sıfırla</button>
+    </div>
+    <div class="geribildirim" id="tMesaj"></div>
+    <div class="bilgi"><b>Az olası / çok olası:</b> Torbada hangi renkten ÇOK varsa, o rengin çekilmesi <b>çok olasıdır</b>. "Şanslı rengim" olasılığı değiştirmez! Sayılar eşitse olasılıklar da eşittir. Hiç yoksa: imkânsız. Hepsi aynı renkse: kesin!</div>
+  </div>
+
+  <!-- 3) ADİL OYUN -->
+  <div class="sayfa" id="s2">
+    <p class="soruMetin">Renk küpü oyunu: küpün kaç yüzü mavi olsun? Küpü at, sayıları izle — bu oyun ADİL mi? ⚖️</p>
+    <div class="kaydirici">
+      <label style="color:#4338ca">🟦 Mavi yüz sayısı: <input type="range" id="kMavi" min="0" max="6" value="4" oninput="kupAyar()"> <b id="kMaviV">4</b></label>
+      <span style="color:#be123c">🟥 Kırmızı yüz: <b id="kKirV">2</b></span>
+    </div>
+    <canvas class="tuvalC" id="kTuval" width="860" height="330"></canvas>
+    <div class="aksiyon">
+      <button onclick="kupAt(1)">🎲 Küpü At</button>
+      <button onclick="kupAt(30)">🎲🎲 30 Kez At</button>
+      <button class="turuncu" onclick="kupSifirla()">🔄 Sayacı Sıfırla</button>
+    </div>
+    <div class="geribildirim" id="kMesaj"></div>
+    <div class="bilgi"><b>Adil oyun:</b> Oyuncuların kazanma olasılıkları <b>eşitse</b> oyun adildir. 4 yüzü mavi 2 yüzü kırmızı küpte maviyi seçen daha çok kazanır — adil DEĞİL! Adil olması için 3 yüz mavi, 3 yüz kırmızı olmalı: eşit olasılık.</div>
+  </div>
+
+  <!-- 4) OLAY AVI -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="oPuan">0</b></span><span>❓ Soru: <b id="oNo">1</b>/10</span></div>
+    <p class="soruMetin">Bu olay nerede durur? İmkânsız mı, az olası mı, çok olası mı, kesin mi? 🕵️</p>
+    <div class="ifadeBuyuk" id="oOlay"></div>
+    <div class="secenekler" id="oSecenek" style="grid-template-columns:repeat(4,minmax(110px,1fr));max-width:720px"></div>
+    <div class="geribildirim" id="oGeri"></div>
+  </div>
+
+  <!-- 5) MİNİ SINAV -->
+  <div class="sayfa" id="s4">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 7. Tema: Veriden Olasılığa · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+  if(i===1)torbaCiz(); if(i===2)kupCiz();
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+const R_KOYU='#0f172a', R_SOLUK='#475569';
+
+/* ---------- 1) spektrum ---------- */
+const spT=document.getElementById('spTuval'), spC=spT.getContext('2d');
+const SP_ORNEK=[
+  {ad:'🦁 Aslanın miyav demesi', v:0},
+  {ad:'👽 Sınıfa uzaylı gelmesi', v:0},
+  {ad:'❄️ Ağustosta kar yağması', v:8},
+  {ad:'🪙 Paranın tura gelmesi', v:50},
+  {ad:'🚌 Servisin vaktinde gelmesi', v:70},
+  {ad:'🌧️ Bulutlu günde yağmur', v:75},
+  {ad:'🪨 Taşın suda batması', v:100},
+  {ad:'🌅 Güneşin yarın doğması', v:100}
+];
+function spektrumCiz(){
+  const v=+document.getElementById('spV').value/100;
+  document.getElementById('spVV').textContent=v.toFixed(2).replace('.',',');
+  const W=spT.width,H=spT.height, x0=70, x1=W-70, y=150;
+  spC.clearRect(0,0,W,H);
+  // gradyan bar
+  const grd=spC.createLinearGradient(x0,0,x1,0);
+  grd.addColorStop(0,'#be123c'); grd.addColorStop(.5,'#eab308'); grd.addColorStop(1,'#059669');
+  spC.fillStyle=grd;
+  spC.beginPath(); spC.roundRect(x0,y-16,x1-x0,32,16); spC.fill();
+  // işaret çizgileri
+  spC.font='bold 15px Comfortaa,sans-serif'; spC.textAlign='center'; spC.fillStyle=R_KOYU;
+  [[0,'0','İMKÂNSIZ','%0'],[.5,'1/2','EŞİT','%50'],[1,'1','KESİN','%100']].forEach(([p,k,ad,yz])=>{
+    const x=x0+(x1-x0)*p;
+    spC.strokeStyle=R_KOYU; spC.lineWidth=2;
+    spC.beginPath(); spC.moveTo(x,y-26); spC.lineTo(x,y+26); spC.stroke();
+    spC.fillText(k, x, y-56);
+    spC.fillText(ad, x, y-36);
+    spC.fillStyle=R_SOLUK; spC.fillText(yz, x, y+48); spC.fillStyle=R_KOYU;
+  });
+  spC.fillStyle=R_SOLUK; spC.font='bold 13px Comfortaa,sans-serif';
+  spC.fillText('← az olası', x0+(x1-x0)*.25, y+48);
+  spC.fillText('çok olası →', x0+(x1-x0)*.75, y+48);
+  // ibre
+  const x=x0+(x1-x0)*v;
+  spC.fillStyle='#6366f1';
+  spC.beginPath(); spC.moveTo(x,y-40); spC.lineTo(x-13,y-62); spC.lineTo(x+13,y-62); spC.closePath(); spC.fill();
+  spC.beginPath(); spC.arc(x,y,11,0,7); spC.fill();
+  spC.strokeStyle='#fff'; spC.lineWidth=3; spC.stroke();
+  // değer kutusu
+  spC.fillStyle=R_KOYU; spC.font='900 22px Georgia'; spC.textAlign='center';
+  const yuzde=Math.round(v*100);
+  let etiket = v===0?'İMKÂNSIZ OLAY':(v===1?'KESİN OLAY':(v===.5?'EŞİT OLASILIK':(v<.5?'AZ OLASI':'ÇOK OLASI')));
+  spC.fillText('Ondalık: '+v.toFixed(2).replace('.',',')+'  ·  Yüzde: %'+yuzde+'  ·  '+etiket, W/2, 250);
+}
+const spKap=document.getElementById('spOrnek');
+SP_ORNEK.forEach(o=>{
+  const b=document.createElement('button'); b.textContent=o.ad;
+  b.onclick=()=>{ document.getElementById('spV').value=o.v; spektrumCiz(); };
+  spKap.appendChild(b);
+});
+spektrumCiz();
+
+/* ---------- 2) torba deneyi ---------- */
+const tT=document.getElementById('tTuval'), tC=tT.getContext('2d');
+let tSayac={kir:0,sar:0}, tSonCekilen=null;
+function torbaAyar(){ tSonCekilen=null; torbaCiz(); }
+function torbaSifirla(){ tSayac={kir:0,sar:0}; tSonCekilen=null; document.getElementById('tMesaj').textContent=''; torbaCiz(); }
+function topCek(adet){
+  const k=+document.getElementById('tKir').value, s=+document.getElementById('tSar').value;
+  if(k+s===0){ document.getElementById('tMesaj').innerHTML='😅 <span class="gb-yanlis">Torba boş! Top çekmek İMKÂNSIZ (olasılık 0).</span>'; return; }
+  for(let i=0;i<adet;i++){
+    if(Math.random()<k/(k+s)) tSayac.kir++; else tSayac.sar++;
+  }
+  tSonCekilen = Math.random()<k/(k+s) ? 'kir':'sar';
+  const m=document.getElementById('tMesaj');
+  if(k===0) m.innerHTML='🟡 <span class="gb-dogru">Kırmızı yok: sarı çekmek KESİN, kırmızı İMKÂNSIZ!</span>';
+  else if(s===0) m.innerHTML='🔴 <span class="gb-dogru">Sarı yok: kırmızı çekmek KESİN!</span>';
+  else if(k===s) m.innerHTML='⚖️ <span class="gb-dogru">Sayılar eşit: iki renk de EŞİT olasılıklı.</span>';
+  else m.innerHTML='🎯 <span class="gb-dogru">'+(k>s?'Kırmızı':'Sarı')+' daha çok: onu çekmek ÇOK OLASI. Sayaç da bunu gösteriyor!</span>';
+  torbaCiz();
+}
+function torbaCiz(){
+  const k=+document.getElementById('tKir').value, s=+document.getElementById('tSar').value;
+  document.getElementById('tKirV').textContent=k;
+  document.getElementById('tSarV').textContent=s;
+  const W=tT.width,H=tT.height;
+  tC.clearRect(0,0,W,H);
+  // torba
+  tC.fillStyle='#d6c4a3';
+  tC.beginPath(); tC.moveTo(180,90);
+  tC.quadraticCurveTo(90,140,100,240); tC.quadraticCurveTo(110,320,230,320);
+  tC.quadraticCurveTo(350,320,360,240); tC.quadraticCurveTo(370,140,280,90);
+  tC.closePath(); tC.fill();
+  tC.strokeStyle='#9a7b4f'; tC.lineWidth=4; tC.stroke();
+  tC.fillStyle='#9a7b4f'; tC.fillRect(175,72,110,22);
+  // toplar
+  const toplar=[];
+  for(let i=0;i<k;i++)toplar.push('#be123c');
+  for(let i=0;i<s;i++)toplar.push('#eab308');
+  toplar.forEach((renk,i)=>{
+    const kol=i%5, sira=Math.floor(i/5);
+    const x=140+kol*45, y=280-sira*44;
+    const grd=tC.createRadialGradient(x-5,y-5,2,x,y,20);
+    grd.addColorStop(0,'#fff8'); grd.addColorStop(.3,renk); grd.addColorStop(1,renk);
+    tC.fillStyle=grd;
+    tC.beginPath(); tC.arc(x,y,19,0,7); tC.fill();
+    tC.strokeStyle='rgba(15,23,42,.3)'; tC.lineWidth=1.5; tC.stroke();
+  });
+  // olasılık ve sayaç paneli
+  tC.fillStyle=R_KOYU; tC.font='bold 18px Comfortaa,sans-serif'; tC.textAlign='left';
+  tC.fillText('Torbada: '+k+' kırmızı, '+s+' sarı', 470, 80);
+  tC.font='bold 15px Comfortaa,sans-serif'; tC.fillStyle=R_SOLUK;
+  if(k+s>0){
+    tC.fillText('Kırmızı çekme olasılığı: '+k+'/'+(k+s), 470, 115);
+    tC.fillText('Sarı çekme olasılığı: '+s+'/'+(k+s), 470, 140);
+  } else tC.fillText('Torba boş!', 470, 115);
+  // sayaç çubukları
+  const top=tSayac.kir+tSayac.sar;
+  tC.fillStyle=R_KOYU; tC.font='bold 16px Comfortaa,sans-serif';
+  tC.fillText('Deney sayacı ('+top+' çekiliş):', 470, 190);
+  const maks=Math.max(tSayac.kir,tSayac.sar,1);
+  [['#be123c',tSayac.kir,220],['#eab308',tSayac.sar,265]].forEach(([renk,v,y])=>{
+    tC.fillStyle=renk;
+    tC.fillRect(470, y, Math.max(4,(v/maks)*280), 30);
+    tC.fillStyle=R_KOYU; tC.font='900 16px Georgia';
+    tC.fillText(v, 470+Math.max(4,(v/maks)*280)+10, y+21);
+  });
+}
+torbaCiz();
+
+/* ---------- 3) adil oyun ---------- */
+const kT=document.getElementById('kTuval'), kC=kT.getContext('2d');
+let kSayac={mavi:0,kir:0}, kSon=null;
+function kupAyar(){ kSon=null; kupCiz(); }
+function kupSifirla(){ kSayac={mavi:0,kir:0}; kSon=null; document.getElementById('kMesaj').textContent=''; kupCiz(); }
+function kupAt(adet){
+  const m=+document.getElementById('kMavi').value;
+  for(let i=0;i<adet;i++){
+    if(Math.random()<m/6) kSayac.mavi++; else kSayac.kir++;
+  }
+  kSon = Math.random()<m/6?'mavi':'kir';
+  const msg=document.getElementById('kMesaj');
+  if(m===3) msg.innerHTML='⚖️ <span class="gb-dogru">3 mavi - 3 kırmızı: olasılıklar EŞİT, oyun ADİL!</span>';
+  else if(m===0||m===6) msg.innerHTML='🚨 <span class="gb-yanlis">Tek renk! Biri KESİN kazanır, diğeri için İMKÂNSIZ — hiç adil değil!</span>';
+  else msg.innerHTML='🚨 <span class="gb-yanlis">'+(m>3?'Mavi':'Kırmızı')+' seçen daha çok kazanır ('+(m>3?m:6-m)+'/6) — oyun ADİL DEĞİL!</span>';
+  kupCiz();
+}
+function kupCiz(){
+  const m=+document.getElementById('kMavi').value;
+  document.getElementById('kMaviV').textContent=m;
+  document.getElementById('kKirV').textContent=6-m;
+  const W=kT.width,H=kT.height;
+  kC.clearRect(0,0,W,H);
+  // küp açılımı (haç şeklinde 6 yüz)
+  const b=62, ox=110, oy=40;
+  const yuzler=[[1,0],[0,1],[1,1],[2,1],[3,1],[1,2]];
+  yuzler.forEach(([gx,gy],i)=>{
+    kC.fillStyle = i<m ? '#4338ca' : '#be123c';
+    kC.fillRect(ox+gx*b, oy+gy*b, b-4, b-4);
+    kC.strokeStyle='#fff'; kC.lineWidth=2;
+    kC.strokeRect(ox+gx*b, oy+gy*b, b-4, b-4);
+  });
+  kC.fillStyle=R_SOLUK; kC.font='bold 14px Comfortaa,sans-serif'; kC.textAlign='center';
+  kC.fillText('Küpün açılımı: '+m+' mavi, '+(6-m)+' kırmızı yüz', ox+2*b, oy+3*b+30);
+  // olasılıklar
+  kC.textAlign='left'; kC.fillStyle=R_KOYU; kC.font='bold 17px Comfortaa,sans-serif';
+  kC.fillText('Mavi gelme olasılığı: '+m+'/6', 470, 70);
+  kC.fillText('Kırmızı gelme olasılığı: '+(6-m)+'/6', 470, 100);
+  const top=kSayac.mavi+kSayac.kir;
+  kC.fillText('Atış sayacı ('+top+' atış):', 470, 160);
+  const maks=Math.max(kSayac.mavi,kSayac.kir,1);
+  [['#4338ca',kSayac.mavi,185],['#be123c',kSayac.kir,230]].forEach(([renk,v,y])=>{
+    kC.fillStyle=renk;
+    kC.fillRect(470, y, Math.max(4,(v/maks)*280), 30);
+    kC.fillStyle=R_KOYU; kC.font='900 16px Georgia';
+    kC.fillText(v, 470+Math.max(4,(v/maks)*280)+10, y+21);
+  });
+  kC.fillStyle = m===3 ? '#047857' : '#be123c';
+  kC.font='900 20px Georgia';
+  kC.fillText(m===3 ? '⚖️ ADİL OYUN' : '🚨 ADİL DEĞİL', 470, 300);
+}
+kupCiz();
+
+/* ---------- 4) olay avı ---------- */
+const OLAYLAR=[
+  {o:'🦁 Bir aslanın "miyav" demesi', d:0},
+  {o:'🐜 Karıncaların bizimle konuşması', d:0},
+  {o:'📅 Bir insanın doğum gününün 30 Şubat olması', d:0},
+  {o:'✈️ Havada uçan bir kedi görülmesi', d:0},
+  {o:'❄️ Ağustos ayında Antalya\'ya kar yağması', d:1},
+  {o:'👟 Yarın okulda ayakkabının çözülmesi', d:1},
+  {o:'🎨 Rastgele fırça darbeleriyle ünlü bir tablonun aynısını yapmak', d:1},
+  {o:'🚌 Belediye otobüsünün tam vaktinde gelmesi', d:2},
+  {o:'🌧️ Kapkara bulutlu bir günde yağmur yağması', d:2},
+  {o:'🏐 Filenin Sultanları\'nın akşamki maçı kazanması', d:2},
+  {o:'🌅 Yarın sabah güneşin doğudan doğması', d:3},
+  {o:'🪨 Suya atılan taşın batması', d:3},
+  {o:'🍊 Sarı ve kırmızı boya karışınca turuncu olması', d:3},
+  {o:'📉 Yukarı atılan taşın yere düşmesi', d:3}
+];
+const OLAY_AD=['🚫 İmkânsız','🤏 Az Olası','👍 Çok Olası','✅ Kesin'];
+let oIdx=0,oPuan=0,oSira=[];
+function oBaslat(){ oIdx=0;oPuan=0;oSira=karistir(OLAYLAR).slice(0,10);
+  document.getElementById('oPuan').textContent=0; oGoster(); }
+function oGoster(){
+  if(oIdx>=oSira.length){ document.getElementById('oSecenek').innerHTML='';
+    document.getElementById('oOlay').textContent='🏁';
+    document.getElementById('oGeri').innerHTML='Av bitti! Toplam <b>'+oPuan+'</b> puan. <button class="tekrar" onclick="oBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('oNo').textContent=oIdx+1;
+  document.getElementById('oGeri').textContent='';
+  const q=oSira[oIdx];
+  document.getElementById('oOlay').textContent=q.o;
+  const kap=document.getElementById('oSecenek'); kap.innerHTML='';
+  OLAY_AD.forEach((ad,i)=>{
+    const b=document.createElement('button'); b.textContent=ad;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); oPuan+=10; document.getElementById('oPuan').textContent=oPuan;
+        document.getElementById('oGeri').innerHTML='🎉 <span class="gb-dogru">Doğru! Bu olay '+OLAY_AD[q.d].split(' ').slice(1).join(' ').toLowerCase()+'.</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('oGeri').innerHTML='😅 <span class="gb-yanlis">Bu olay: '+OLAY_AD[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      oIdx++; setTimeout(oGoster,1800);
+    };
+    kap.appendChild(b);
+  });
+}
+oBaslat();
+
+/* ---------- 5) mini sınav ---------- */
+const sinav=[
+ {s:'Bir olayın olasılık değeri hangi aralıkta olur?', c:['1 ile 10 arasında','0 ile 1 arasında (0 ve 1 dâhil)','−1 ile 1 arasında','%100\'den büyük olabilir'], d:1},
+ {s:'Olasılığı 0 olan olaya ne denir?', c:['Kesin olay','Az olası olay','İmkânsız olay','Eşit olasılıklı olay'], d:2},
+ {s:'Olasılığı 1 (yani %100) olan olaya ne denir?', c:['Kesin olay','İmkânsız olay','Çok olası olay','Şanslı olay'], d:0},
+ {s:'Torbada 3 kırmızı, 1 sarı top var. Hangisi doğru?', c:['Sarı çekmek çok olası','Kırmızı çekmek çok olası','İkisi eşit olasılıklı','Kırmızı çekmek imkânsız'], d:1},
+ {s:'"Mavi şanslı rengim, o yüzden mavi çıkacak!" diyen biri için ne söylenir?', c:['Haklıdır, şans önemlidir','Olasılık duyguyla değil, sayılarla belirlenir','Mavi her zaman çok olasıdır','Torbaya bakmaya gerek yok'], d:1},
+ {s:'Madenî para atıldığında tura gelme olasılığı spektrumda nerededir?', c:['0\'da (imkânsız)','1\'de (kesin)','Tam ortada: 1/2','1\'e çok yakın'], d:2},
+ {s:'4 yüzü mavi, 2 yüzü kırmızı renk küpüyle oynanan oyun için ne denir?', c:['Adildir','Maviyi seçen avantajlıdır, adil değildir','Kırmızıyı seçen avantajlıdır','Kimse kazanamaz'], d:1},
+ {s:'Bu oyunu ADİL yapmak için küp nasıl boyanmalı?', c:['6 yüzü mavi','5 mavi, 1 kırmızı','3 mavi, 3 kırmızı','Hiç boyanmamalı'], d:2}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

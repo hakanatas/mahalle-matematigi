@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Üçgen Laboratuvarı — Üçgen ve Üçgen İnşası (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1040px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.araclar{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;margin-bottom:var(--space-sm);align-items:center;font-family:var(--font-headings);font-weight:700}
+.araclar button{font-family:var(--font-headings);font-weight:700;font-size:.98rem;padding:.7rem 1.2rem;border:1px solid var(--border-glass);border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.8);color:var(--color-text-main);transition:var(--transition-smooth)}
+.araclar button:hover{transform:translateY(-2px);border-color:var(--color-gold);color:var(--color-gold)}
+.araclar button.secili{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:inset 0 2px 8px rgba(31,38,135,.05);touch-action:none}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:820px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-emerald-glow);animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-recher-glow);animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.08)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.2rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.2rem;font-weight:700;max-width:820px;margin:0 auto var(--space-sm);text-align:center}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+.turEtiket{font-family:var(--font-headings);font-weight:800;font-size:1.25rem;text-align:center;color:var(--color-emerald-dark);margin-top:var(--space-xs)}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🔺 ÜÇGEN <span class="vurgu">LABORATUVARI</span></h1>
+    <p>1. Tema · Üçgen ve Üçgen İnşası — Üçgen Çeşitleri, İç Açılar, Pergel-Cetvel İnşası</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">🔬 Üçgen Laboratuvarı</button>
+    <button onclick="sayfaAc(1,this)">⚙️ Pergelle İnşa</button>
+    <button onclick="sayfaAc(2,this)">🎯 Üçgen Avı</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) LAB -->
+  <div class="sayfa aktif" id="s0">
+    <p style="text-align:center;font-family:var(--font-headings);font-weight:700;margin-bottom:10px">Köşeleri (A, B, C) sürükle — açılar ve üçgenin türü anında değişsin! ✋</p>
+    <canvas class="tuvalC" id="labTuval" width="820" height="420"></canvas>
+    <div class="turEtiket" id="labEtiket"></div>
+    <div class="bilgi">
+      <b>Açılarına göre:</b> tüm açılar 90°'den küçükse <b>dar açılı</b>; bir açı 90° ise <b>dik açılı</b>; bir açı 90°'den büyükse <b>geniş açılı</b> üçgen. Bir üçgende iki dik veya iki geniş açı olamaz — çünkü üç iç açının ölçüleri toplamı her zaman <span class="sembol">180°</span>!
+      <b>Kenarlarına göre:</b> üç kenar eşitse <b>eşkenar</b>, iki kenar eşitse <b>ikizkenar</b>, hepsi farklıysa <b>çeşitkenar</b>.
+    </div>
+  </div>
+
+  <!-- 2) PERGEL İNŞASI -->
+  <div class="sayfa" id="s1">
+    <div class="araclar">
+      <button class="secili" id="ad0" onclick="adimGit(0)">1️⃣ [AB] çiz</button>
+      <button id="ad1" onclick="adimGit(1)">2️⃣ A'dan çember</button>
+      <button id="ad2" onclick="adimGit(2)">3️⃣ B'den çember</button>
+      <button id="ad3" onclick="adimGit(3)">4️⃣ C'yi bul, üçgeni çiz!</button>
+    </div>
+    <canvas class="tuvalC" id="insaTuval" width="820" height="420"></canvas>
+    <div class="bilgi" id="insaBilgi"></div>
+  </div>
+
+  <!-- 3) ÜÇGEN AVI -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="aPuan">0</b></span><span>❓ Soru: <b id="aNo">1</b>/10</span></div>
+    <p class="soruMetin" id="avSoru"></p>
+    <canvas class="tuvalC" id="avTuval" width="600" height="320"></canvas>
+    <div class="secenekler" id="avSecenek"></div>
+    <div class="geribildirim" id="aGeri"></div>
+  </div>
+
+  <!-- 4) MİNİ SINAV -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 1. Tema: Geometrik Şekiller · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+const R_EMERALD='#059669', R_GOLD='#c2410c', R_INDIGO='#6366f1', R_RECHER='#be123c', R_KOYU='#0f172a';
+
+function acilar(A,B,C){
+  const a=Math.hypot(B.x-C.x,B.y-C.y), b=Math.hypot(A.x-C.x,A.y-C.y), c=Math.hypot(A.x-B.x,A.y-B.y);
+  const A1=Math.acos(Math.max(-1,Math.min(1,(b*b+c*c-a*a)/(2*b*c))))*180/Math.PI;
+  const B1=Math.acos(Math.max(-1,Math.min(1,(a*a+c*c-b*b)/(2*a*c))))*180/Math.PI;
+  return {aA:A1, aB:B1, aC:180-A1-B1, a, b, c};
+}
+function aciSinif(o){
+  const m=Math.max(o.aA,o.aB,o.aC);
+  if(m>92) return 'GENİŞ AÇILI';
+  if(m>=88) return 'DİK AÇILI';
+  return 'DAR AÇILI';
+}
+function kenarSinif(o){
+  const k=[o.a,o.b,o.c].sort((x,y)=>x-y);
+  const esit=(p,q)=>Math.abs(p-q)/q<0.06;
+  if(esit(k[0],k[2])) return 'EŞKENAR';
+  if(esit(k[0],k[1])||esit(k[1],k[2])) return 'İKİZKENAR';
+  return 'ÇEŞİTKENAR';
+}
+function ucgenCiz(ctx,A,B,C,etiketli){
+  ctx.strokeStyle=R_INDIGO; ctx.lineWidth=5; ctx.fillStyle='rgba(99,102,241,.1)'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.lineTo(C.x,C.y); ctx.closePath(); ctx.fill(); ctx.stroke();
+  [[A,'A'],[B,'B'],[C,'C']].forEach(([p,h])=>{
+    ctx.fillStyle=R_RECHER; ctx.beginPath(); ctx.arc(p.x,p.y,8,0,7); ctx.fill();
+    ctx.fillStyle=R_KOYU; ctx.font='bold 19px Georgia'; ctx.fillText(h,p.x+12,p.y-10);
+  });
+  if(etiketli){
+    const o=acilar(A,B,C);
+    ctx.fillStyle=R_GOLD; ctx.font='bold 16px Comfortaa,sans-serif';
+    const merkez={x:(A.x+B.x+C.x)/3, y:(A.y+B.y+C.y)/3};
+    [[A,o.aA],[B,o.aB],[C,o.aC]].forEach(([p,d])=>{
+      const dx=merkez.x-p.x, dy=merkez.y-p.y, L=Math.hypot(dx,dy);
+      ctx.fillText(Math.round(d)+'°', p.x+dx/L*44-12, p.y+dy/L*44+6);
+    });
+  }
+}
+
+/* ---------- 1) lab ---------- */
+const lT=document.getElementById('labTuval'), lC=lT.getContext('2d');
+const P={A:{x:230,y:330},B:{x:600,y:330},C:{x:420,y:110}};
+let tutulan=null;
+function labCiz(){
+  lC.clearRect(0,0,lT.width,lT.height);
+  lC.strokeStyle='rgba(99,102,241,.07)'; lC.lineWidth=1;
+  for(let x=0;x<lT.width;x+=30){lC.beginPath();lC.moveTo(x,0);lC.lineTo(x,lT.height);lC.stroke();}
+  for(let y=0;y<lT.height;y+=30){lC.beginPath();lC.moveTo(0,y);lC.lineTo(lT.width,y);lC.stroke();}
+  ucgenCiz(lC,P.A,P.B,P.C,true);
+  const o=acilar(P.A,P.B,P.C);
+  document.getElementById('labEtiket').innerHTML=
+    'Açılarına göre: <b>'+aciSinif(o)+' ÜÇGEN</b> · Kenarlarına göre: <b>'+kenarSinif(o)+' ÜÇGEN</b> · '+
+    Math.round(o.aA)+'° + '+Math.round(o.aB)+'° + '+Math.round(o.aC)+'° = 180°';
+}
+function labKoord(e){ const r=lT.getBoundingClientRect();
+  return {x:(e.clientX-r.left)*lT.width/r.width, y:(e.clientY-r.top)*lT.height/r.height}; }
+lT.addEventListener('pointerdown',e=>{
+  const p=labKoord(e);
+  tutulan=null;
+  for(const h of ['A','B','C']) if(Math.hypot(P[h].x-p.x,P[h].y-p.y)<30) tutulan=h;
+});
+lT.addEventListener('pointermove',e=>{
+  if(!tutulan) return;
+  const p=labKoord(e);
+  P[tutulan].x=Math.max(20,Math.min(lT.width-20,p.x));
+  P[tutulan].y=Math.max(20,Math.min(lT.height-20,p.y));
+  labCiz();
+});
+addEventListener('pointerup',()=>tutulan=null);
+labCiz();
+
+/* ---------- 2) pergel inşası ---------- */
+const iT=document.getElementById('insaTuval'), iC=iT.getContext('2d');
+const IA={x:250,y:330}, IB={x:570,y:330}, rA=230, rB=210;
+let adim=0, anim=null, ilerleme=0;
+const insaMetin=[
+ '<b>1. Adım:</b> Cetvelle <span class="sembol">[AB]</span> doğru parçasını çiz. Bu, üçgenimizin bir kenarı olacak.',
+ '<b>2. Adım:</b> Pergelin sivri ucunu <b>A</b> noktasına koy, istediğin kadar aç ve bir çember çiz. C köşesi bu çemberin üzerinde bir yerde olacak!',
+ '<b>3. Adım:</b> Şimdi pergeli <b>B</b> noktasına koy ve ikinci çemberi çiz. İki çember birbirini kesecek!',
+ '<b>4. Adım:</b> Çemberlerin <b>kesişim noktası</b> C köşemizdir! A ve B merkezleri ile kesişim noktasını birleştir: karşında pergel-cetvelle inşa edilmiş <span class="sembol">ABC üçgeni</span>! 🎉'
+];
+function adimGit(n){
+  adim=n; ilerleme=0;
+  [0,1,2,3].forEach(i=>document.getElementById('ad'+i).classList.toggle('secili',i===n));
+  document.getElementById('insaBilgi').innerHTML=insaMetin[n];
+  if(anim) cancelAnimationFrame(anim);
+  insaAnim();
+}
+function kesisim(){
+  // iki çemberin üstteki kesişim noktası
+  const d=Math.hypot(IB.x-IA.x,IB.y-IA.y);
+  const a=(rA*rA-rB*rB+d*d)/(2*d);
+  const h=Math.sqrt(Math.max(0,rA*rA-a*a));
+  const mx=IA.x+a*(IB.x-IA.x)/d, my=IA.y+a*(IB.y-IA.y)/d;
+  return {x:mx+h*(IB.y-IA.y)/d, y:my-h*(IB.x-IA.x)/d};
+}
+function insaAnim(){
+  ilerleme=Math.min(1,ilerleme+0.02);
+  insaCiz();
+  if(ilerleme<1) anim=requestAnimationFrame(insaAnim);
+}
+function insaCiz(){
+  iC.clearRect(0,0,iT.width,iT.height);
+  iC.strokeStyle='rgba(99,102,241,.07)'; iC.lineWidth=1;
+  for(let x=0;x<iT.width;x+=30){iC.beginPath();iC.moveTo(x,0);iC.lineTo(x,iT.height);iC.stroke();}
+  for(let y=0;y<iT.height;y+=30){iC.beginPath();iC.moveTo(0,y);iC.lineTo(iT.width,y);iC.stroke();}
+  const C=kesisim();
+  // adım 1: AB
+  iC.strokeStyle=R_KOYU; iC.lineWidth=5; iC.lineCap='round';
+  const abSon = adim===0 ? ilerleme : 1;
+  iC.beginPath(); iC.moveTo(IA.x,IA.y); iC.lineTo(IA.x+(IB.x-IA.x)*abSon, IA.y); iC.stroke();
+  // adım 2: A çemberi
+  if(adim>=1){
+    const t = adim===1 ? ilerleme : 1;
+    iC.strokeStyle=R_EMERALD; iC.lineWidth=3;
+    iC.beginPath(); iC.arc(IA.x,IA.y,rA,-Math.PI/2,-Math.PI/2+t*Math.PI*2); iC.stroke();
+  }
+  // adım 3: B çemberi
+  if(adim>=2){
+    const t = adim===2 ? ilerleme : 1;
+    iC.strokeStyle=R_GOLD; iC.lineWidth=3;
+    iC.beginPath(); iC.arc(IB.x,IB.y,rB,-Math.PI/2,-Math.PI/2+t*Math.PI*2); iC.stroke();
+  }
+  // adım 4: üçgen
+  if(adim>=3){
+    const t=ilerleme;
+    iC.strokeStyle=R_RECHER; iC.lineWidth=5;
+    iC.beginPath(); iC.moveTo(IA.x,IA.y); iC.lineTo(IA.x+(C.x-IA.x)*t, IA.y+(C.y-IA.y)*t); iC.stroke();
+    iC.beginPath(); iC.moveTo(IB.x,IB.y); iC.lineTo(IB.x+(C.x-IB.x)*t, IB.y+(C.y-IB.y)*t); iC.stroke();
+    if(t>=1){
+      iC.fillStyle='rgba(190,18,60,.08)';
+      iC.beginPath(); iC.moveTo(IA.x,IA.y); iC.lineTo(IB.x,IB.y); iC.lineTo(C.x,C.y); iC.closePath(); iC.fill();
+      iC.fillStyle=R_RECHER; iC.beginPath(); iC.arc(C.x,C.y,9,0,7); iC.fill();
+      iC.fillStyle=R_KOYU; iC.font='bold 19px Georgia'; iC.fillText('C (kesişim!)',C.x+14,C.y-10);
+    }
+  }
+  // A ve B
+  [[IA,'A'],[IB,'B']].forEach(([p,h])=>{
+    iC.fillStyle=R_RECHER; iC.beginPath(); iC.arc(p.x,p.y,8,0,7); iC.fill();
+    iC.fillStyle=R_KOYU; iC.font='bold 19px Georgia'; iC.fillText(h,p.x-6,p.y+30);
+  });
+}
+adimGit(0);
+
+/* ---------- 3) üçgen avı ---------- */
+const aT=document.getElementById('avTuval'), aC=aT.getContext('2d');
+let aIdx=0,aPuan=0,avDogru='',avTip='aci';
+function avBaslat(){ aIdx=0;aPuan=0;document.getElementById('aPuan').textContent=0; avSoru(); }
+function rasgeleUcgen(sinif){
+  const W=aT.width,H=aT.height;
+  let A,B,C;
+  if(sinif==='Dik açılı'){ A={x:150,y:250}; B={x:150+120+Math.random()*140,y:250}; C={x:150,y:250-90-Math.random()*90}; }
+  else if(sinif==='Geniş açılı'){ A={x:130,y:250}; B={x:470,y:250}; C={x:180+Math.random()*60,y:200-Math.random()*60}; }
+  else if(sinif==='Dar açılı'){ A={x:160,y:260}; B={x:440,y:260}; C={x:270+Math.random()*60,y:80+Math.random()*40}; }
+  else if(sinif==='Eşkenar'){ const s=200; A={x:200,y:270}; B={x:200+s,y:270}; C={x:200+s/2,y:270-s*0.866}; }
+  else if(sinif==='İkizkenar'){ const s=170; A={x:210,y:270}; B={x:210+s,y:270}; C={x:210+s/2,y:70+Math.random()*40}; }
+  else { A={x:150,y:270}; B={x:480,y:250}; C={x:250,y:90}; }
+  return {A,B,C};
+}
+function avSoru(){
+  if(aIdx>=10){ document.getElementById('avSecenek').innerHTML='';
+    document.getElementById('aGeri').innerHTML='🏁 Av bitti! Toplam <b>'+aPuan+'</b> puan. <button class="tekrar" onclick="avBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('aNo').textContent=aIdx+1;
+  document.getElementById('aGeri').textContent='';
+  avTip = Math.random()<0.5 ? 'aci' : 'kenar';
+  let secenekler, soru;
+  if(avTip==='aci'){ secenekler=['Dar açılı','Dik açılı','Geniş açılı']; soru='Bu üçgen AÇILARINA göre hangi çeşittir? 🔎'; }
+  else { secenekler=['Eşkenar','İkizkenar','Çeşitkenar']; soru='Bu üçgen KENARLARINA göre hangi çeşittir? 🔎'; }
+  document.getElementById('avSoru').textContent=soru;
+  avDogru=secenekler[Math.floor(Math.random()*3)];
+  const u=rasgeleUcgen(avDogru);
+  aC.clearRect(0,0,aT.width,aT.height);
+  ucgenCiz(aC,u.A,u.B,u.C,avTip==='aci');
+  if(avTip==='kenar'){
+    // kenar uzunluklarını göster
+    const o=acilar(u.A,u.B,u.C);
+    aC.fillStyle=R_GOLD; aC.font='bold 15px Comfortaa,sans-serif';
+    function kenarEtiket(p1,p2,uz){ aC.fillText(Math.round(uz/10)+' birim',(p1.x+p2.x)/2+8,(p1.y+p2.y)/2-8); }
+    kenarEtiket(u.A,u.B,o.c); kenarEtiket(u.B,u.C,o.a); kenarEtiket(u.A,u.C,o.b);
+  }
+  const kap=document.getElementById('avSecenek'); kap.innerHTML='';
+  secenekler.forEach(t=>{
+    const b=document.createElement('button'); b.textContent=t+' üçgen';
+    b.onclick=()=>{
+      if(t===avDogru){ b.classList.add('dogru'); aPuan+=10; document.getElementById('aPuan').textContent=aPuan;
+        document.getElementById('aGeri').innerHTML='🎉 <span class="gb-dogru">Doğru!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('aGeri').innerHTML='😅 <span class="gb-yanlis">Doğrusu: '+avDogru+' üçgen</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      aIdx++; setTimeout(avSoru,1400);
+    };
+    kap.appendChild(b);
+  });
+}
+avBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'Bir üçgenin iç açılarının ölçüleri toplamı kaç derecedir?', c:['90°','180°','270°','360°'], d:1},
+ {s:'Bir iç açısı 90° olan üçgene ne denir?', c:['Dar açılı üçgen','Geniş açılı üçgen','Dik açılı üçgen','Eşkenar üçgen'], d:2},
+ {s:'Tüm iç açıları 90°\'den küçük olan üçgene ne denir?', c:['Dar açılı üçgen','Dik açılı üçgen','Geniş açılı üçgen','İkizkenar üçgen'], d:0},
+ {s:'Bir üçgende iki dik açı olabilir mi? Neden?', c:['Olur, kare gibi olur','Olmaz; 90+90=180 olur, üçüncü açıya yer kalmaz','Olur, geniş üçgende','Olmaz; üçgende hiç dik açı olmaz'], d:1},
+ {s:'Üç kenar uzunluğu da eşit olan üçgene ne denir?', c:['İkizkenar üçgen','Çeşitkenar üçgen','Dik üçgen','Eşkenar üçgen'], d:3},
+ {s:'İki kenar uzunluğu eşit olan üçgene ne denir?', c:['İkizkenar üçgen','Eşkenar üçgen','Çeşitkenar üçgen','Dar açılı üçgen'], d:0},
+ {s:'Pergel-cetvelle üçgen inşasında C köşesi nasıl bulunur?', c:['Göz kararı işaretlenir','Cetvelle ölçülür','İki çemberin kesişim noktasından','Açıölçerle çizilir'], d:2},
+ {s:'Bir açısı 120° olan üçgen hangi çeşittir?', c:['Dar açılı','Dik açılı','Eşkenar','Geniş açılı'], d:3}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

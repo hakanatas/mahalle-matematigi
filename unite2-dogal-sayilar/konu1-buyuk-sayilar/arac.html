@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sayı Makinesi — Çok Basamaklı Doğal Sayılar (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1060px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.araclar{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;margin-bottom:var(--space-sm);align-items:center;font-family:var(--font-headings);font-weight:700}
+.araclar button{font-family:var(--font-headings);font-weight:700;font-size:.9rem;padding:.6rem 1rem;border:1px solid var(--border-glass);border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.8);color:var(--color-text-main);transition:var(--transition-smooth)}
+.araclar button:hover{transform:translateY(-2px);border-color:var(--color-gold);color:var(--color-gold)}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:880px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:1fr;gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1.05rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-emerald-glow);animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-recher-glow);animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.2rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.2rem;font-weight:700;max-width:880px;margin:0 auto var(--space-sm);text-align:center}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+/* sayı girişi */
+.sayiGiris{display:flex;gap:var(--space-xs);justify-content:center;flex-wrap:wrap;align-items:center;margin-bottom:var(--space-sm)}
+.sayiGiris input{font-family:var(--font-accent);font-size:1.5rem;font-weight:700;padding:.6rem 1rem;border:2px solid var(--border-glass);border-radius:var(--radius-sm);width:300px;text-align:center;color:var(--color-indigo);background:rgba(255,255,255,.9)}
+.sayiGiris input:focus{outline:none;border-color:var(--color-emerald)}
+/* basamak tablosu */
+.tabloKap{overflow-x:auto;padding-bottom:6px}
+table.btablo{border-collapse:collapse;margin:0 auto;background:rgba(255,255,255,.9)}
+table.btablo th,table.btablo td{border:2px solid rgba(99,102,241,.25);padding:.45rem .6rem;text-align:center}
+table.btablo .boluk{font-family:var(--font-headings);font-weight:800;font-size:.85rem;color:#fff}
+table.btablo .basamakAd{font-size:.62rem;color:var(--color-text-muted);max-width:64px;line-height:1.25}
+table.btablo .rakam{font-family:var(--font-accent);font-size:1.7rem;font-weight:900;cursor:pointer;transition:var(--transition-smooth)}
+table.btablo .rakam:hover{background:rgba(5,150,105,.12)}
+table.btablo .rakam.secildi{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff}
+.b0{background:linear-gradient(135deg,#059669,#047857)}
+.b1{background:linear-gradient(135deg,#6366f1,#4338ca)}
+.b2{background:linear-gradient(135deg,#ea580c,#c2410c)}
+.b3{background:linear-gradient(135deg,#be123c,#9f1239)}
+.okunusKutu{font-family:var(--font-headings);font-weight:700;font-size:1.15rem;text-align:center;color:var(--color-emerald-dark);background:rgba(5,150,105,.07);border:1px solid rgba(5,150,105,.25);border-radius:var(--radius-md);padding:var(--space-sm);max-width:880px;margin:var(--space-sm) auto 0}
+.degerKutu{text-align:center;font-family:var(--font-headings);font-weight:700;font-size:1.05rem;color:var(--color-gold-dark);min-height:32px;margin-top:var(--space-xs)}
+/* bölük kur */
+.bolukKur{display:flex;gap:var(--space-sm);justify-content:center;flex-wrap:wrap;margin-bottom:var(--space-sm)}
+.bolukKur .grup{text-align:center}
+.bolukKur label{font-family:var(--font-headings);font-weight:700;font-size:.85rem;display:block;margin-bottom:4px}
+.bolukKur input{font-family:var(--font-accent);font-size:1.4rem;font-weight:700;width:110px;padding:.5rem;text-align:center;border:2px solid var(--border-glass);border-radius:var(--radius-sm)}
+.bolukKur input:focus{outline:none;border-color:var(--color-emerald)}
+.buyukSayi{font-family:var(--font-accent);font-size:2.2rem;font-weight:900;text-align:center;color:var(--color-indigo);margin-top:var(--space-xs);word-break:break-all}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}table.btablo .rakam{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🔢 SAYI <span class="vurgu">MAKİNESİ</span></h1>
+    <p>2. Tema · Çok Basamaklı Doğal Sayılar — Bölükler, Basamaklar, Okunuş ve Basamak Değeri</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">🔍 Basamak Tablosu</button>
+    <button onclick="sayfaAc(1,this)">🧱 Bölüklerden Sayı Kur</button>
+    <button onclick="sayfaAc(2,this)">🎯 Okunuş Avı</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) BASAMAK TABLOSU -->
+  <div class="sayfa aktif" id="s0">
+    <div class="sayiGiris">
+      <input type="text" id="sayiIn" value="149597890" maxlength="12" inputmode="numeric" oninput="tabloGuncelle()">
+    </div>
+    <div class="araclar">
+      <span>Gezegen uzaklıkları (km):</span>
+      <button onclick="sayiKoy(384400)">🌙 Ay</button>
+      <button onclick="sayiKoy(57909175)">☿ Merkür</button>
+      <button onclick="sayiKoy(149597890)">🌍 Dünya</button>
+      <button onclick="sayiKoy(778412020)">♃ Jüpiter</button>
+      <button onclick="sayiKoy(4498252900)">♆ Neptün</button>
+    </div>
+    <div class="tabloKap" id="tabloKap"></div>
+    <div class="degerKutu" id="degerKutu">👆 Tablodaki bir rakama tıkla, basamak değerini görelim!</div>
+    <div class="okunusKutu" id="okunusKutu"></div>
+    <div class="bilgi">
+      <b>Kural:</b> Sayılar sağdan sola <b>üçerli bölüklere</b> ayrılır: birler, binler, milyonlar, milyarlar bölüğü. Her bölüğün adı, o bölüğün <b>ilk basamağının</b> adıyla aynıdır. Okurken her bölükteki sayı okunur, ardından bölüğün adı söylenir; birler bölüğünün adı söylenmez!
+    </div>
+  </div>
+
+  <!-- 2) BÖLÜKLERDEN SAYI KUR -->
+  <div class="sayfa" id="s1">
+    <p class="soruMetin">Her bölüğe 0-999 arası bir sayı yaz, makine sayını kursun! 🏗️</p>
+    <div class="bolukKur">
+      <div class="grup"><label style="color:#9f1239">MİLYARLAR</label><input type="text" id="bMilyar" value="0" maxlength="3" inputmode="numeric" oninput="kurGuncelle()"></div>
+      <div class="grup"><label style="color:#c2410c">MİLYONLAR</label><input type="text" id="bMilyon" value="149" maxlength="3" inputmode="numeric" oninput="kurGuncelle()"></div>
+      <div class="grup"><label style="color:#4338ca">BİNLER</label><input type="text" id="bBin" value="597" maxlength="3" inputmode="numeric" oninput="kurGuncelle()"></div>
+      <div class="grup"><label style="color:#047857">BİRLER</label><input type="text" id="bBir" value="890" maxlength="3" inputmode="numeric" oninput="kurGuncelle()"></div>
+    </div>
+    <div class="buyukSayi" id="kurSayi"></div>
+    <div class="okunusKutu" id="kurOkunus"></div>
+    <div class="bilgi"><b>İpucu:</b> Bölükteki sayı 3 basamaktan azsa sayının içinde <b>0 ile doldurulur</b>: binler bölüğü "1" ise sayıda "001" olarak görünür. Kayıp sıfırlara dikkat!</div>
+  </div>
+
+  <!-- 3) OKUNUŞ AVI -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="aPuan">0</b></span><span>❓ Soru: <b id="aNo">1</b>/10</span></div>
+    <div class="soruMetin" id="avSoru"></div>
+    <div class="secenekler" id="avSecenek"></div>
+    <div class="geribildirim" id="aGeri"></div>
+  </div>
+
+  <!-- 4) MİNİ SINAV -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 2. Tema: Sayılar ve Nicelikler · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+
+/* ---------- Türkçe okunuş ---------- */
+const RAKAM=['','bir','iki','üç','dört','beş','altı','yedi','sekiz','dokuz'];
+const ONLAR=['','on','yirmi','otuz','kırk','elli','altmış','yetmiş','seksen','doksan'];
+function ucluOku(n){
+  const y=Math.floor(n/100), o=Math.floor((n%100)/10), b=n%10;
+  let s='';
+  if(y===1) s+='yüz '; else if(y>1) s+=RAKAM[y]+' yüz ';
+  if(o) s+=ONLAR[o]+' ';
+  if(b) s+=RAKAM[b]+' ';
+  return s.trim();
+}
+function sayiOku(n){
+  if(n===0) return 'sıfır';
+  const gruplar=[]; let k=n;
+  while(k>0){ gruplar.push(k%1000); k=Math.floor(k/1000); }
+  const adlar=['','bin','milyon','milyar'];
+  let parcalar=[];
+  for(let i=gruplar.length-1;i>=0;i--){
+    const g=gruplar[i];
+    if(g===0) continue;
+    if(i===1 && g===1) parcalar.push('bin');
+    else parcalar.push((ucluOku(g)+' '+adlar[i]).trim());
+  }
+  return parcalar.join(' ');
+}
+function noktali(n){ return n.toLocaleString('tr-TR'); }
+function busHarf(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+/* ---------- 1) basamak tablosu ---------- */
+const BASAMAKLAR=['Birler','Onlar','Yüzler','Binler','On binler','Yüz binler','Milyonlar','On milyonlar','Yüz milyonlar','Milyarlar','On milyarlar','Yüz milyarlar'];
+const BOLUKLER=['BİRLER BÖLÜĞÜ','BİNLER BÖLÜĞÜ','MİLYONLAR BÖLÜĞÜ','MİLYARLAR BÖLÜĞÜ'];
+function sayiKoy(n){ document.getElementById('sayiIn').value=n; tabloGuncelle(); }
+function tabloGuncelle(){
+  const inp=document.getElementById('sayiIn');
+  inp.value=inp.value.replace(/\D/g,'').slice(0,12);
+  const s=inp.value.replace(/^0+(?=\d)/,'');
+  const kap=document.getElementById('tabloKap');
+  document.getElementById('degerKutu').textContent='👆 Tablodaki bir rakama tıkla, basamak değerini görelim!';
+  if(!s){ kap.innerHTML=''; document.getElementById('okunusKutu').textContent='Bir sayı yaz!'; return; }
+  const n=parseInt(s,10);
+  const hane=s.length, bolukSay=Math.ceil(hane/3);
+  let html='<table class="btablo"><tr>';
+  for(let b=bolukSay-1;b>=0;b--){
+    const genis=(b===bolukSay-1 && hane%3!==0)?hane%3:3;
+    html+='<th class="boluk b'+b+'" colspan="'+genis+'">'+BOLUKLER[b]+'</th>';
+  }
+  html+='</tr><tr>';
+  for(let i=hane-1;i>=0;i--) html+='<td class="basamakAd">'+BASAMAKLAR[i]+'<br>basamağı</td>';
+  html+='</tr><tr>';
+  for(let i=0;i<hane;i++){
+    const pozisyon=hane-1-i; // basamak indeksi
+    html+='<td class="rakam" data-r="'+s[i]+'" data-p="'+pozisyon+'">'+s[i]+'</td>';
+  }
+  html+='</tr></table>';
+  kap.innerHTML=html;
+  kap.querySelectorAll('.rakam').forEach(td=>{
+    td.onclick=()=>{
+      kap.querySelectorAll('.rakam').forEach(x=>x.classList.remove('secildi'));
+      td.classList.add('secildi');
+      const r=+td.dataset.r, p=+td.dataset.p, deger=r*Math.pow(10,p);
+      document.getElementById('degerKutu').innerHTML=
+        'Basamak değeri: <span class="sembol">'+r+' × '+noktali(Math.pow(10,p))+' = '+noktali(deger)+'</span> ('+BASAMAKLAR[p].toLowerCase()+' basamağı)';
+    };
+  });
+  document.getElementById('okunusKutu').textContent='🔊 Okunuşu: '+busHarf(sayiOku(n));
+}
+tabloGuncelle();
+
+/* ---------- 2) bölüklerden sayı kur ---------- */
+function kurGuncelle(){
+  const oku=id=>{ const el=document.getElementById(id);
+    el.value=el.value.replace(/\D/g,'').slice(0,3);
+    return el.value===''?0:parseInt(el.value,10); };
+  const milyar=oku('bMilyar'), milyon=oku('bMilyon'), bin=oku('bBin'), bir=oku('bBir');
+  const n=milyar*1000000000+milyon*1000000+bin*1000+bir;
+  document.getElementById('kurSayi').textContent=noktali(n);
+  document.getElementById('kurOkunus').textContent='🔊 Okunuşu: '+busHarf(sayiOku(n));
+}
+kurGuncelle();
+
+/* ---------- 3) okunuş avı ---------- */
+let aIdx=0,aPuan=0;
+function rastgeleSayi(){
+  const hane=[4,5,6,7,8,9,10][Math.floor(Math.random()*7)];
+  let s=''+(1+Math.floor(Math.random()*9));
+  for(let i=1;i<hane;i++) s+=Math.random()<0.3?'0':Math.floor(Math.random()*10);
+  return parseInt(s,10);
+}
+function saptirici(n){
+  const yontem=Math.floor(Math.random()*3);
+  let m;
+  if(yontem===0) m=Math.floor(n/10);          // sıfır/hane kaybı
+  else if(yontem===1) m=n*10;                  // fazladan sıfır
+  else {                                       // iki bölüğü değiştir
+    const s=(''+n); const gr=[];
+    let k=n; while(k>0){ gr.push(k%1000); k=Math.floor(k/1000); }
+    if(gr.length>=2){ const t=gr[0]; gr[0]=gr[1]; gr[1]=t;
+      m=gr.reduce((acc,g,i)=>acc+g*Math.pow(1000,i),0);
+    } else m=n+1;
+  }
+  return (m===n||m===0)?n+1:m;
+}
+function avBaslat(){ aIdx=0;aPuan=0;document.getElementById('aPuan').textContent=0; avSoru(); }
+function avSoru(){
+  if(aIdx>=10){ document.getElementById('avSecenek').innerHTML='';
+    document.getElementById('avSoru').innerHTML='🏁 Av bitti! Toplam <b>'+aPuan+'</b> puan.';
+    document.getElementById('aGeri').innerHTML='<button class="tekrar" onclick="avBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('aNo').textContent=aIdx+1;
+  document.getElementById('aGeri').textContent='';
+  const n=rastgeleSayi();
+  document.getElementById('avSoru').innerHTML='Okunuşu şu olan sayı hangisi? 🔎<br><span style="color:var(--color-indigo)">"'+busHarf(sayiOku(n))+'"</span>';
+  const secSet=new Set([n]);
+  while(secSet.size<4) secSet.add(saptirici(n));
+  const secler=karistir([...secSet]);
+  const kap=document.getElementById('avSecenek'); kap.innerHTML='';
+  secler.forEach(m=>{
+    const b=document.createElement('button');
+    b.style.fontFamily="'Playfair Display',Georgia,serif"; b.style.fontSize='1.3rem'; b.style.fontWeight='800';
+    b.textContent=noktali(m);
+    b.onclick=()=>{
+      if(m===n){ b.classList.add('dogru'); aPuan+=10; document.getElementById('aPuan').textContent=aPuan;
+        document.getElementById('aGeri').innerHTML='🎉 <span class="gb-dogru">Doğru!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('aGeri').innerHTML='😅 <span class="gb-yanlis">Doğrusu: '+noktali(n)+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      aIdx++; setTimeout(avSoru,1600);
+    };
+    kap.appendChild(b);
+  });
+}
+avBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'Sayılar sağdan sola kaçarlı gruplara (bölüklere) ayrılır?', c:['İkişerli','Üçerli','Dörderli','Beşerli'], d:1},
+ {s:'745 306 sayısının binler bölüğündeki sayı kaçtır?', c:['306','7','745','45'], d:2},
+ {s:'8 205 417 sayısında yüz binler basamağındaki rakam hangisidir?', c:['8','2','0','5'], d:1},
+ {s:'63 850 sayısında 8 rakamının basamak değeri kaçtır?', c:['8','80','800','8000'], d:2},
+ {s:'"İki milyon beş bin yedi" sayısının rakamlarla yazılışı hangisidir?', c:['2 005 007','2 500 007','2 005 700','25 007'], d:0},
+ {s:'Milyonlar bölüğünden sonra (solda) hangi bölük gelir?', c:['Binler bölüğü','Yüz milyonlar bölüğü','Milyarlar bölüğü','Trilyonlar bölüğü'], d:2},
+ {s:'Bir bölüğün adı neyle aynıdır?', c:['Son basamağının adıyla','İlk basamağının adıyla','Rakam sayısıyla','Sayının okunuşuyla'], d:1},
+ {s:'4 070 000 sayısının okunuşu hangisidir?', c:['Dört milyon yedi bin','Dört milyon yetmiş bin','Kırk milyon yetmiş bin','Dört milyar yetmiş milyon'], d:1}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

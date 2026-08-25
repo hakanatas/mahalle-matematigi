@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doğru Dedektifleri — Doğruların Birbirine Göre Durumları (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1040px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.araclar{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;margin-bottom:var(--space-sm);align-items:center}
+.araclar button{font-family:var(--font-headings);font-weight:700;font-size:.98rem;padding:.7rem 1.2rem;border:1px solid var(--border-glass);border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.8);color:var(--color-text-main);transition:var(--transition-smooth)}
+.araclar button:hover{transform:translateY(-2px);border-color:var(--color-gold);color:var(--color-gold)}
+.araclar button.secili{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:inset 0 2px 8px rgba(31,38,135,.05);touch-action:none}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:820px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-xs);max-width:720px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-emerald-glow);animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;box-shadow:0 0 20px var(--color-recher-glow);animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.08)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.2rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.2rem;font-weight:700;max-width:820px;margin:0 auto var(--space-sm);text-align:center}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+.turEtiket{font-family:var(--font-headings);font-weight:800;font-size:1.35rem;text-align:center;color:var(--color-emerald-dark);margin-top:var(--space-xs)}
+.kaydirici{display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;margin-bottom:var(--space-sm);font-family:var(--font-headings);font-weight:700}
+input[type=range]{width:220px;accent-color:var(--color-emerald);height:28px}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🛤️ DOĞRU <span class="vurgu">DEDEKTİFLERİ</span></h1>
+    <p>1. Tema · Doğruların Birbirine Göre Durumları — Kesişen, Paralel, Çakışık Doğrular ve Açılar</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">🛤️ Doğru Simülatörü</button>
+    <button onclick="sayfaAc(1,this)">✂️ Kesişim Laboratuvarı</button>
+    <button onclick="sayfaAc(2,this)">🎯 Durum Avı</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) SİMÜLATÖR -->
+  <div class="sayfa aktif" id="s0">
+    <div class="kaydirici">
+      <label>🔄 Kırmızı doğrunun eğimi: <input type="range" id="egim" min="0" max="180" value="30" oninput="simCiz()"></label>
+      <label>↕️ Yukarı-aşağı kaydır: <input type="range" id="kaydir" min="-120" max="120" value="60" oninput="simCiz()"></label>
+    </div>
+    <div class="araclar">
+      <button onclick="simAyar(30,60)">Kesişen yap</button>
+      <button onclick="simAyar(0,80)">Paralel yap</button>
+      <button onclick="simAyar(0,0)">Çakışık yap</button>
+    </div>
+    <canvas class="tuvalC" id="simTuval" width="820" height="380"></canvas>
+    <div class="turEtiket" id="simDurum">KESİŞEN DOĞRULAR ✂️</div>
+    <div class="bilgi" id="simBilgi"></div>
+  </div>
+
+  <!-- 2) KESİŞİM LABORATUVARI -->
+  <div class="sayfa" id="s1">
+    <div class="araclar">
+      <button class="secili" id="lb0" onclick="labMod(0)">🔍 Serbest İncele</button>
+      <button id="lb1" onclick="labMod(1)">↔️ Ters Açıları Göster</button>
+      <button id="lb2" onclick="labMod(2)">🤝 Komşu Açıları Göster</button>
+      <label style="font-family:var(--font-headings)">Kesenin açısı: <input type="range" id="labAci" min="20" max="160" value="60" oninput="labCiz()"></label>
+    </div>
+    <canvas class="tuvalC" id="labTuval" width="820" height="400"></canvas>
+    <div class="bilgi" id="labBilgi">
+      <b>İki doğru kesişince</b> 4 açı oluşur. Zıt yönlere bakan açılara <b>ters açılar</b> denir ve ölçüleri <b>eşittir</b>. Bir kolu ortak olan açılara <b>komşu açılar</b> denir; kesişimde komşu açıların toplamı <span class="sembol">180°</span> olur (komşu bütünler). Toplamı 90° olan açılar <b>tümler</b>, 180° olanlar <b>bütünler</b> açılardır.
+    </div>
+  </div>
+
+  <!-- 3) DURUM AVI -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="aPuan">0</b></span><span>❓ Soru: <b id="aNo">1</b>/10</span></div>
+    <p class="soruMetin">Bu iki doğrunun birbirine göre durumu nedir? 🔎</p>
+    <canvas class="tuvalC" id="avTuval" width="600" height="300"></canvas>
+    <div class="secenekler" id="avSecenek"></div>
+    <div class="geribildirim" id="aGeri"></div>
+  </div>
+
+  <!-- 4) MİNİ SINAV -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 1. Tema: Geometrik Şekiller · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+const R_EMERALD='#059669', R_GOLD='#c2410c', R_INDIGO='#6366f1', R_RECHER='#be123c', R_KOYU='#0f172a';
+
+/* uzun doğru çizen yardımcı */
+function dogruCiz(ctx,cx,cy,acideg,renk,W,H,kalinlik){
+  const rad=acideg*Math.PI/180, L=Math.max(W,H);
+  ctx.strokeStyle=renk; ctx.lineWidth=kalinlik||5; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(cx-L*Math.cos(rad), cy+L*Math.sin(rad));
+  ctx.lineTo(cx+L*Math.cos(rad), cy-L*Math.sin(rad));
+  ctx.stroke();
+}
+
+/* ---------- 1) simülatör ---------- */
+const sT=document.getElementById('simTuval'), sC=sT.getContext('2d');
+function simAyar(e,k){ document.getElementById('egim').value=e; document.getElementById('kaydir').value=k; simCiz(); }
+function simCiz(){
+  const W=sT.width,H=sT.height;
+  const egim=+document.getElementById('egim').value;
+  const kay=+document.getElementById('kaydir').value;
+  sC.clearRect(0,0,W,H);
+  sC.strokeStyle='rgba(99,102,241,.07)'; sC.lineWidth=1;
+  for(let x=0;x<W;x+=30){sC.beginPath();sC.moveTo(x,0);sC.lineTo(x,H);sC.stroke();}
+  for(let y=0;y<H;y+=30){sC.beginPath();sC.moveTo(0,y);sC.lineTo(W,y);sC.stroke();}
+  const cy=H/2;
+  // mavi sabit doğru (yatay, merkez)
+  dogruCiz(sC,W/2,cy,0,R_INDIGO,W,H,6);
+  sC.fillStyle=R_INDIGO; sC.font='bold 16px Georgia'; sC.fillText('AB',20,cy-12);
+  // kırmızı doğru
+  const efektifAci=egim%180;
+  dogruCiz(sC,W/2,cy-kay,efektifAci,R_RECHER,W,H,6);
+  sC.fillStyle=R_RECHER; sC.fillText('CD',W-50,cy-kay-12*(efektifAci===0?1:0)-12);
+  let durum,bilgi;
+  if(efektifAci===0 && kay===0){ durum='ÇAKIŞIK DOĞRULAR 🫂';
+    bilgi='<b>Çakışık doğrular:</b> Tüm noktaları ortaktır — aslında ikisi aynı doğrudur! Üst üste bindiler. Açı oluşturmazlar.'; }
+  else if(efektifAci===0){ durum='PARALEL DOĞRULAR 🛤️';
+    bilgi='<b>Paralel doğrular:</b> Düzlemde hiç kesişmezler, ortak noktaları yoktur, açı oluşturmazlar. Sembolle: <span class="sembol">AB // CD</span>. Tren rayları gibi!'; }
+  else { durum='KESİŞEN DOĞRULAR ✂️';
+    // kesişim noktası işaretle
+    const rad=efektifAci*Math.PI/180;
+    const t=(kay)/Math.tan(rad);
+    const ix=W/2+t, iy=cy;
+    if(ix>0&&ix<W){ sC.fillStyle=R_GOLD; sC.beginPath(); sC.arc(ix,iy,9,0,7); sC.fill();
+      sC.fillStyle=R_KOYU; sC.font='bold 15px Comfortaa,sans-serif'; sC.fillText('kesişim noktası',ix+14,iy-12); }
+    bilgi='<b>Kesişen doğrular:</b> Yalnız <b>bir ortak noktaları</b> vardır. Her biri diğerinin <b>keseni</b>dir. Kesişince 4 açı oluşur: 2 çift ters açı!'; }
+  document.getElementById('simDurum').textContent=durum;
+  document.getElementById('simBilgi').innerHTML=bilgi;
+}
+simCiz();
+
+/* ---------- 2) kesişim laboratuvarı ---------- */
+const lT=document.getElementById('labTuval'), lC=lT.getContext('2d');
+let labModu=0;
+function labMod(m){ labModu=m;
+  [0,1,2].forEach(i=>document.getElementById('lb'+i).classList.toggle('secili',i===m));
+  labCiz();
+  const b=document.getElementById('labBilgi');
+  if(m===1) b.innerHTML='<b>Ters açılar</b> zıt yönlere bakar ve ölçüleri <b>her zaman eşittir</b>: yeşil çift birbirine eş, turuncu çift birbirine eş. Kesen döndükçe izle — eşitlik hiç bozulmuyor!';
+  else if(m===2) b.innerHTML='<b>Komşu açılar</b>ın bir kolu ortaktır. Kesişimde yan yana duran iki açının toplamı hep <span class="sembol">180°</span> olur — bunlara <b>komşu bütünler açılar</b> denir. Toplamı 90° olsaydı <b>tümler</b> derdik.';
+  else b.innerHTML='<b>İki doğru kesişince</b> 4 açı oluşur. Zıt yönlere bakan açılara <b>ters açılar</b> denir ve ölçüleri <b>eşittir</b>. Bir kolu ortak olan açılara <b>komşu açılar</b> denir; kesişimde komşu açıların toplamı <span class="sembol">180°</span> olur.';
+}
+function yayCiz(ctx,cx,cy,r,a1,a2,renk,dolgu){
+  ctx.beginPath(); ctx.moveTo(cx,cy);
+  ctx.arc(cx,cy,r,-a2*Math.PI/180,-a1*Math.PI/180);
+  ctx.closePath();
+  if(dolgu){ ctx.fillStyle=dolgu; ctx.fill(); }
+  ctx.strokeStyle=renk; ctx.lineWidth=3; ctx.stroke();
+}
+function labCiz(){
+  const W=lT.width,H=lT.height, cx=W/2, cy=H/2;
+  const a=+document.getElementById('labAci').value; // kesen açısı
+  lC.clearRect(0,0,W,H);
+  // yatay doğru + kesen
+  dogruCiz(lC,cx,cy,0,R_INDIGO,W,H,6);
+  dogruCiz(lC,cx,cy,a,R_RECHER,W,H,6);
+  const yesil='rgba(5,150,105,.85)', yesilD='rgba(5,150,105,.25)';
+  const turuncu='rgba(234,88,12,.85)', turuncuD='rgba(234,88,12,.25)';
+  const gri='rgba(71,85,105,.5)', griD='rgba(71,85,105,.08)';
+  // 4 açı: [0,a] üst-sağ, [a,180] üst-sol, [180,180+a] alt-sol, [180+a,360] alt-sağ
+  if(labModu===1){
+    yayCiz(lC,cx,cy,56,0,a,yesil,yesilD);          // üst sağ
+    yayCiz(lC,cx,cy,56,180,180+a,yesil,yesilD);    // alt sol (ters eşi)
+    yayCiz(lC,cx,cy,44,a,180,turuncu,turuncuD);    // üst sol
+    yayCiz(lC,cx,cy,44,180+a,360,turuncu,turuncuD);// alt sağ (ters eşi)
+  } else if(labModu===2){
+    yayCiz(lC,cx,cy,56,0,a,yesil,yesilD);          // komşu 1
+    yayCiz(lC,cx,cy,44,a,180,turuncu,turuncuD);    // komşu 2
+    yayCiz(lC,cx,cy,36,180,360,gri,griD);
+  } else {
+    yayCiz(lC,cx,cy,56,0,a,yesil,yesilD);
+    yayCiz(lC,cx,cy,44,a,180,turuncu,turuncuD);
+    yayCiz(lC,cx,cy,56,180,180+a,gri,griD);
+    yayCiz(lC,cx,cy,44,180+a,360,gri,griD);
+  }
+  // ölçü etiketleri
+  lC.font='bold 17px Comfortaa,sans-serif';
+  function etiket(orta,r,metin,renk){ const rad=-orta*Math.PI/180;
+    lC.fillStyle=renk; lC.fillText(metin,cx+r*Math.cos(rad)-14,cy+r*Math.sin(rad)+6); }
+  etiket(a/2,92,a+'°',R_EMERALD);
+  etiket(a+(180-a)/2,86,(180-a)+'°',R_GOLD);
+  if(labModu===1){ etiket(180+a/2,92,a+'°',R_EMERALD); etiket(180+a+(180-a)/2,86,(180-a)+'°',R_GOLD); }
+  if(labModu===2){ lC.fillStyle=R_KOYU; lC.font='bold 18px Comfortaa,sans-serif';
+    lC.fillText(a+'° + '+(180-a)+'° = 180°', cx-80, 34); }
+  // merkez
+  lC.fillStyle=R_KOYU; lC.beginPath(); lC.arc(cx,cy,6,0,7); lC.fill();
+}
+labCiz();
+
+/* ---------- 3) durum avı ---------- */
+const aT=document.getElementById('avTuval'), aC=aT.getContext('2d');
+const durumlar=['Kesişen doğrular','Paralel doğrular','Çakışık doğrular'];
+let aIdx=0,aPuan=0,avDogru='';
+function avBaslat(){ aIdx=0;aPuan=0;document.getElementById('aPuan').textContent=0; avSoru(); }
+function avSoru(){
+  if(aIdx>=10){ document.getElementById('avSecenek').innerHTML='';
+    document.getElementById('aGeri').innerHTML='🏁 Av bitti! Toplam <b>'+aPuan+'</b> puan. <button class="tekrar" onclick="avBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('aNo').textContent=aIdx+1;
+  document.getElementById('aGeri').textContent='';
+  avDogru=durumlar[Math.floor(Math.random()*3)];
+  const W=aT.width,H=aT.height;
+  aC.clearRect(0,0,W,H);
+  aC.strokeStyle='rgba(99,102,241,.07)'; aC.lineWidth=1;
+  for(let x=0;x<W;x+=30){aC.beginPath();aC.moveTo(x,0);aC.lineTo(x,H);aC.stroke();}
+  for(let y=0;y<H;y+=30){aC.beginPath();aC.moveTo(0,y);aC.lineTo(W,y);aC.stroke();}
+  const tabanAci=Math.floor(Math.random()*60)-30;
+  if(avDogru==='Kesişen doğrular'){
+    dogruCiz(aC,W/2,H/2,tabanAci,R_INDIGO,W,H,6);
+    dogruCiz(aC,W/2,H/2,tabanAci+30+Math.floor(Math.random()*90),R_RECHER,W,H,6);
+  } else if(avDogru==='Paralel doğrular'){
+    dogruCiz(aC,W/2,H/2-45,tabanAci,R_INDIGO,W,H,6);
+    dogruCiz(aC,W/2,H/2+45,tabanAci,R_RECHER,W,H,6);
+  } else {
+    dogruCiz(aC,W/2,H/2,tabanAci,R_INDIGO,W,H,10);
+    // çakışık: üstüne kesik kesik ikinci renk
+    const rad=tabanAci*Math.PI/180,L=Math.max(W,H);
+    aC.setLineDash([14,14]); aC.strokeStyle=R_RECHER; aC.lineWidth=10; aC.lineCap='butt';
+    aC.beginPath(); aC.moveTo(W/2-L*Math.cos(rad),H/2+L*Math.sin(rad)); aC.lineTo(W/2+L*Math.cos(rad),H/2-L*Math.sin(rad)); aC.stroke();
+    aC.setLineDash([]);
+  }
+  const kap=document.getElementById('avSecenek'); kap.innerHTML='';
+  durumlar.forEach(t=>{
+    const b=document.createElement('button'); b.textContent=t;
+    b.onclick=()=>{
+      if(t===avDogru){ b.classList.add('dogru'); aPuan+=10; document.getElementById('aPuan').textContent=aPuan;
+        document.getElementById('aGeri').innerHTML='🎉 <span class="gb-dogru">Doğru!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('aGeri').innerHTML='😅 <span class="gb-yanlis">Doğrusu: '+avDogru+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      aIdx++; setTimeout(avSoru,1400);
+    };
+    kap.appendChild(b);
+  });
+}
+avBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'İki doğrunun yalnız BİR ortak noktası varsa bu doğrulara ne denir?', c:['Paralel doğrular','Kesişen doğrular','Çakışık doğrular','Dik doğrular'], d:1},
+ {s:'Düzlemde hiç kesişmeyen ve açı oluşturmayan doğrulara ne denir?', c:['Paralel doğrular','Kesişen doğrular','Çakışık doğrular','Kesen'], d:0},
+ {s:'Tüm noktaları ortak olan doğrulara ne denir?', c:['Paralel doğrular','Dik doğrular','Kesişen doğrular','Çakışık doğrular'], d:3},
+ {s:'"AB // CD" gösterimi ne anlama gelir?', c:['AB, CD\'ye diktir','AB ile CD kesişir','AB, CD\'ye paraleldir','AB, CD ile çakışıktır'], d:2},
+ {s:'İki doğru kesiştiğinde zıt yönlere bakan açılara ne denir?', c:['Komşu açılar','Ters açılar','Eş kenarlar','Dış açılar'], d:1},
+ {s:'Ters açıların ölçüleri için ne söylenebilir?', c:['Toplamı 90° olur','Toplamı 180° olur','Birbirine eşittir','Biri hep büyüktür'], d:2},
+ {s:'Ölçüleri toplamı 180° olan iki açıya ne denir?', c:['Bütünler açılar','Tümler açılar','Ters açılar','Eş açılar'], d:0},
+ {s:'Ölçüleri toplamı 90° olan iki açıya ne denir?', c:['Bütünler açılar','Komşu açılar','Ters açılar','Tümler açılar'], d:3}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

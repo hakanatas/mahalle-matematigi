@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometri Kâşifleri — Temel Geometrik Şekiller (5. Sınıf)</title>
+<style>
+/* Design System — "Kraliçeyi Kurtarmak" uyumlu */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+
+:root {
+  --bg-dark: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --border-glass: rgba(99, 102, 241, 0.2);
+  --border-glass-hover: rgba(99, 102, 241, 0.45);
+
+  --color-emerald: #059669;
+  --color-emerald-light: #10b981;
+  --color-emerald-dark: #047857;
+  --color-emerald-glow: rgba(5, 150, 105, 0.15);
+
+  --color-gold: #c2410c;
+  --color-gold-light: #ea580c;
+  --color-gold-dark: #9a3412;
+  --color-gold-glow: rgba(194, 65, 12, 0.15);
+
+  --color-recher: #be123c;
+  --color-recher-glow: rgba(190, 18, 60, 0.15);
+
+  --color-indigo: #6366f1;
+
+  --color-text-main: #0f172a;
+  --color-text-muted: #475569;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --transition-smooth: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --font-main: 'Comfortaa', sans-serif;
+  --font-headings: 'Baloo 2', 'Comfortaa', sans-serif;
+  --font-accent: 'Playfair Display', Georgia, serif;
+  --font-handwritten: 'Caveat', cursive;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+html, body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 45%, #fef3c7 100%);
+  background-attachment: fixed;
+  color: var(--color-text-main);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+body { padding: var(--space-md) var(--space-sm); }
+
+/* Dinamik arka plan */
+#arkaplanCanvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1; pointer-events: none;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,.5); }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,.2); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-emerald); }
+
+.kutu {
+  position: relative; z-index: 10;
+  max-width: 1040px; margin: 0 auto;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+  overflow: hidden;
+}
+
+header {
+  text-align: center;
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  background: linear-gradient(180deg, rgba(99,102,241,.08), transparent);
+}
+header h1 {
+  font-family: var(--font-accent);
+  font-size: 2.1rem; font-weight: 800; letter-spacing: .03em;
+  color: var(--color-text-main);
+}
+header h1 .vurgu { color: var(--color-gold); }
+header p {
+  font-family: var(--font-main);
+  font-size: 0.95rem; color: var(--color-text-muted); margin-top: 6px;
+}
+
+nav {
+  display: flex; flex-wrap: wrap; gap: var(--space-xs);
+  justify-content: center; padding: 0 var(--space-md) var(--space-md);
+}
+nav button {
+  font-family: var(--font-headings); font-weight: 700; font-size: 1rem;
+  padding: .7rem 1.4rem; border-radius: 22px; cursor: pointer;
+  background: rgba(255,255,255,.7); color: var(--color-text-main);
+  border: 1px solid var(--border-glass);
+  transition: var(--transition-smooth);
+}
+nav button:hover { border-color: var(--color-emerald); color: var(--color-emerald); box-shadow: 0 0 10px rgba(16,185,129,.2); }
+nav button.aktif {
+  background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 15px var(--color-emerald-glow);
+}
+
+.sayfa { display: none; padding: var(--space-md); }
+.sayfa.aktif { display: block; animation: gel .4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+@keyframes gel { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; } }
+
+/* araç butonları */
+.araclar { display: flex; flex-wrap: wrap; gap: var(--space-xs); justify-content: center; margin-bottom: var(--space-sm); }
+.araclar button {
+  font-family: var(--font-headings); font-weight: 700; font-size: .98rem;
+  padding: .7rem 1.2rem; border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm); cursor: pointer;
+  background: rgba(255,255,255,.8); color: var(--color-text-main);
+  transition: var(--transition-smooth);
+  display: inline-flex; align-items: center; gap: .4rem;
+}
+.araclar button:hover { transform: translateY(-2px); border-color: var(--color-gold); color: var(--color-gold); }
+.araclar button.secili {
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 15px var(--color-gold-glow);
+}
+.araclar button.temiz:hover { border-color: var(--color-recher); color: var(--color-recher); }
+
+canvas {
+  display: block; margin: 0 auto; max-width: 100%;
+  background: rgba(255,255,255,.95);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 2px 8px rgba(31,38,135,.05);
+  touch-action: none;
+}
+
+.bilgi {
+  background: rgba(255,255,255,.75);
+  border: 1px solid var(--border-glass);
+  border-left: 6px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin: var(--space-sm) auto 0; max-width: 820px;
+  font-size: 1.02rem; color: var(--color-text-muted);
+}
+.bilgi b { color: var(--color-gold-dark); }
+.sembol {
+  font-family: var(--font-accent); font-weight: 700;
+  background: rgba(99,102,241,.1); color: var(--color-indigo);
+  padding: 2px 9px; border-radius: var(--radius-sm);
+}
+
+.satir { display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center; align-items: flex-start; }
+.panel {
+  background: rgba(255,255,255,.75);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  transition: var(--transition-smooth);
+  max-width: 460px;
+}
+.panel:hover { border-color: var(--border-glass-hover); }
+input[type=range] { width: 220px; accent-color: var(--color-emerald); height: 28px; }
+.buyuk { font-family: var(--font-headings); font-size: 1.25rem; font-weight: 800; color: var(--color-text-main); }
+
+/* soru kartı */
+#soruKarti {
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,.1);
+  padding: var(--space-lg);
+  text-align: center;
+  font-family: var(--font-accent); font-size: 2.4rem; font-weight: 800;
+  color: var(--color-indigo);
+  max-width: 460px; margin: 0 auto var(--space-sm);
+}
+.yonerge { text-align: center; font-family: var(--font-headings); font-weight: 600; font-size: 1.05rem; color: var(--color-text-muted); margin-bottom: var(--space-sm); }
+
+.secenekler { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--space-xs); max-width: 820px; margin: 0 auto; }
+.secenekler button {
+  font-family: var(--font-main); font-weight: 600; font-size: 1rem;
+  padding: .9rem 1rem; border-radius: var(--radius-sm); cursor: pointer;
+  background: rgba(255,255,255,.85); color: var(--color-text-main);
+  border: 1px solid var(--border-glass);
+  transition: var(--transition-smooth);
+}
+.secenekler button:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--color-emerald); color: var(--color-emerald); box-shadow: 0 0 12px rgba(16,185,129,.2); }
+.secenekler button.dogru {
+  background: linear-gradient(135deg, var(--color-emerald), var(--color-emerald-dark));
+  color: #fff !important; border-color: transparent;
+  box-shadow: 0 0 20px var(--color-emerald-glow);
+  animation: zipla .45s;
+}
+.secenekler button.yanlis {
+  background: linear-gradient(135deg, var(--color-recher), #9f1239);
+  color: #fff !important; border-color: transparent;
+  box-shadow: 0 0 20px var(--color-recher-glow);
+  animation: salla .45s;
+}
+@keyframes zipla { 30% { transform: scale(1.08); } }
+@keyframes salla { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+.skorbar { display: flex; justify-content: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+.skorbar span {
+  font-family: var(--font-headings); font-weight: 700; font-size: 1.05rem;
+  background: rgba(255,255,255,.8);
+  border: 1px solid var(--border-glass);
+  padding: .5rem 1.3rem; border-radius: 22px;
+  color: var(--color-gold-dark);
+  box-shadow: 0 0 12px var(--color-gold-glow);
+}
+#geribildirim, #geribildirim2 { text-align: center; font-family: var(--font-headings); font-size: 1.2rem; font-weight: 700; min-height: 40px; margin-top: var(--space-sm); }
+.gb-dogru { color: var(--color-emerald); }
+.gb-yanlis { color: var(--color-recher); }
+
+#sinavSoru {
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,.1);
+  padding: var(--space-md);
+  font-family: var(--font-headings); font-size: 1.25rem; font-weight: 700;
+  color: var(--color-text-main);
+  max-width: 820px; margin: 0 auto var(--space-sm); text-align: center;
+}
+
+.tekrar {
+  margin-top: var(--space-sm);
+  font-family: var(--font-headings); font-weight: 700; font-size: 1.1rem;
+  padding: .8rem 1.8rem; border: none; border-radius: var(--radius-sm); cursor: pointer;
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+  color: #fff; box-shadow: 0 0 15px var(--color-gold-glow);
+  transition: var(--transition-smooth);
+}
+.tekrar:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--color-gold); }
+
+.sonucKart { font-size: 1.1rem !important; }
+.sonucKart .puanBuyuk { font-family: var(--font-accent); font-size: 2.6rem; color: var(--color-gold); display: block; margin: .4rem 0; }
+
+footer {
+  text-align: center; padding: var(--space-sm);
+  font-family: var(--font-main); font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--border-glass);
+}
+
+@media (max-width: 640px) {
+  header h1 { font-size: 1.4rem; }
+  #soruKarti { font-size: 1.7rem; padding: var(--space-md); }
+}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🧭 GEOMETRİ <span class="vurgu">KÂŞİFLERİ</span></h1>
+    <p>1. Tema · Temel Geometrik Şekiller — Nokta, Doğru, Işın, Çember, Dikme</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button style="background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold)); color:#fff; border-color:transparent; box-shadow:0 0 15px var(--color-gold-glow)">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">✏️ Çizim Atölyesi</button>
+    <button onclick="sayfaAc(1,this)">⭕ Pergel &amp; Çember</button>
+    <button onclick="sayfaAc(2,this)">🎯 Sembol Avı</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- ============ 1) ÇİZİM ATÖLYESİ ============ -->
+  <div class="sayfa aktif" id="s0">
+    <div class="araclar">
+      <button class="secili" onclick="modSec('nokta',this)">• Nokta</button>
+      <button onclick="modSec('parca',this)">— Doğru Parçası</button>
+      <button onclick="modSec('isin',this)">→ Işın</button>
+      <button onclick="modSec('dogru',this)">↔ Doğru</button>
+      <button onclick="modSec('dikme',this)">⊥ Dikme</button>
+      <button class="temiz" onclick="temizle()">🧹 Temizle</button>
+    </div>
+    <canvas id="tuval" width="900" height="420"></canvas>
+    <div class="bilgi" id="aciklama">
+      <b>Nokta:</b> Kalemin kâğıda bir kez dokunmasıyla oluşan izdir. Eni, boyu ve derinliği <b>yoktur</b>.
+      Tuvale dokun, noktalar oluşsun! Gösterim: <span class="sembol">A</span> → "A noktası"
+    </div>
+  </div>
+
+  <!-- ============ 2) ÇEMBER ============ -->
+  <div class="sayfa" id="s1">
+    <div class="satir">
+      <canvas id="cemberTuval" width="440" height="400"></canvas>
+      <div class="panel">
+        <p class="buyuk">🛠️ Pergelini Ayarla</p>
+        <p style="margin:10px 0">Yarıçap (r): <input type="range" id="yariCap" min="30" max="170" value="100"> <b id="rEtiket">100</b> birim</p>
+        <p style="margin:10px 0"><label style="font-size:1.05em"><input type="checkbox" id="daireKutu" style="transform:scale(1.5); margin-right:8px; accent-color:#059669"> İçini boya → <b>Daire</b> olsun!</label></p>
+        <button class="tekrar" onclick="pergelCiz()">🌀 Pergelle Çiz (izle!)</button>
+        <div class="bilgi" style="margin-top:14px">
+          <b>Çember:</b> Merkeze eşit uzaklıktaki noktaların oluşturduğu şekildir.<br>
+          <b>Yarıçap (r):</b> Merkezden çembere. &nbsp; <b>Çap (R):</b> Merkezden geçerek çemberin iki noktasını birleştirir.<br>
+          👉 Kural: <span class="sembol">R = 2 × r</span> — Şu an: R = <b id="capEtiket">200</b> birim
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3) SEMBOL AVI ============ -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="puan1">0</b></span><span>❓ Soru: <b id="soruNo">1</b>/10</span></div>
+    <div id="soruKarti">[AB]</div>
+    <p class="yonerge">Bu gösterimin okunuşu hangisi? 🔎</p>
+    <div class="secenekler" id="secenekler"></div>
+    <div id="geribildirim"></div>
+  </div>
+
+  <!-- ============ 4) MİNİ SINAV ============ -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="puan2">0</b></span><span>❓ Soru: <b id="soruNo2">1</b>/8</span></div>
+    <div id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div id="geribildirim2"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 1. Tema: Geometrik Şekiller · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan: süzülen geometrik şekiller ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[];
+  const ADET = Math.min(46, Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){
+    sekiller.push({
+      x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+      r:6+Math.random()*22,
+      vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35,
+      don:Math.random()*Math.PI*2, donHiz:(Math.random()-.5)*.008,
+      tip:tipler[i%tipler.length],
+      renk:renkler[i%renkler.length],
+      alfa:.08+Math.random()*.14,
+      faz:Math.random()*Math.PI*2
+    });
+  }
+  function sekilCiz(s,t){
+    const nefes=1+Math.sin(t*.001+s.faz)*.12;   // hafif nefes alma
+    const r=s.r*nefes;
+    g.save(); g.translate(s.x,s.y); g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));
+    g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));
+    g.lineWidth=2;
+    g.beginPath();
+    if(s.tip==='cember'){ g.arc(0,0,r,0,7); }
+    else if(s.tip==='ucgen'){ g.moveTo(0,-r); g.lineTo(r*.87,r*.5); g.lineTo(-r*.87,r*.5); g.closePath(); }
+    else if(s.tip==='kare'){ g.rect(-r*.7,-r*.7,r*1.4,r*1.4); }
+    else if(s.tip==='nokta'){ g.arc(0,0,r*.25,0,7); g.fill(); }
+    else { g.moveTo(-r,0); g.lineTo(r,0); g.moveTo(0,-r); g.lineTo(0,r); } // artı (koordinat hissi)
+    if(s.tip!=='nokta'){ g.fill(); g.stroke(); }
+    g.restore();
+  }
+  function dongu(t){
+    g.clearRect(0,0,W,H);
+    // yakın şekiller arasında ince bağlantı çizgileri
+    for(let i=0;i<sekiller.length;i++) for(let j=i+1;j<sekiller.length;j++){
+      const a=sekiller[i], b=sekiller[j], d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){ g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';
+        g.lineWidth=1; g.beginPath(); g.moveTo(a.x,a.y); g.lineTo(b.x,b.y); g.stroke(); }
+    }
+    sekiller.forEach(s=>{
+      s.x+=s.vx; s.y+=s.vy; s.don+=s.donHiz;
+      // fareden nazikçe kaç
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110 && df>0){ s.x+=(s.x-fare.x)/df*.6; s.y+=(s.y-fare.y)/df*.6; }
+      if(s.x<-40)s.x=W+40; if(s.x>W+40)s.x=-40;
+      if(s.y<-40)s.y=H+40; if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);
+    });
+    requestAnimationFrame(dongu);
+  }
+  requestAnimationFrame(dongu);
+})();
+
+/* ---------- sekmeler ---------- */
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif');
+  btn.classList.add('aktif');
+  if(i===1) cemberGuncelle();
+}
+
+/* ---------- palet ---------- */
+const R_EMERALD='#059669', R_GOLD='#c2410c', R_INDIGO='#6366f1', R_RECHER='#be123c', R_KOYU='#0f172a', R_SOLUK='#475569';
+
+/* ---------- 1) çizim atölyesi ---------- */
+const tuval=document.getElementById('tuval'), ctx=tuval.getContext('2d');
+let mod='nokta', tiklar=[], cizimler=[];
+const harfler='ABCDEFGHKLMNPRST'.split(''); let harfNo=0;
+
+const bilgiler={
+ nokta:'<b>Nokta:</b> Kalemin kâğıda bir kez dokunmasıyla oluşan izdir. Eni, boyu ve derinliği <b>yoktur</b>. Tuvale dokun! Gösterim: <span class="sembol">A</span> → "A noktası"',
+ parca:'<b>Doğru Parçası:</b> İki nokta arasında düz hizalanmış noktalar. İki noktaya tıkla, aradaki noktalar dolsun! Gösterim: <span class="sembol">[AB]</span> · Uzunluğu: <span class="sembol">|AB|</span>',
+ isin:'<b>Işın:</b> Bir noktadan başlar, tek yönde <b>sonsuza</b> gider. Önce başlangıç noktasına, sonra yön noktasına tıkla! Gösterim: <span class="sembol">[AB</span> → "AB ışını"',
+ dogru:'<b>Doğru:</b> İki ucu da <b>sonsuza</b> giden düz çizgi. İki noktaya tıkla! Gösterim: <span class="sembol">AB</span> (üzerinde çift ok) → "AB doğrusu"',
+ dikme:'<b>Dikme:</b> Doğruya dışındaki bir noktadan <b>dik</b> çizilen doğru parçası — en kısa yol budur! Önce doğru için iki noktaya, sonra dışarıdaki noktaya tıkla. Gösterim: <span class="sembol">[AB] ⊥ CD</span>'
+};
+function modSec(m,btn){ mod=m; tiklar=[];
+  document.querySelectorAll('#s0 .araclar button').forEach(b=>b.classList.remove('secili'));
+  btn.classList.add('secili');
+  document.getElementById('aciklama').innerHTML=bilgiler[m]; ciz();
+}
+function temizle(){ cizimler=[]; tiklar=[]; harfNo=0; ciz(); }
+
+tuval.addEventListener('pointerdown',e=>{
+  const r=tuval.getBoundingClientRect();
+  const x=(e.clientX-r.left)*tuval.width/r.width, y=(e.clientY-r.top)*tuval.height/r.height;
+  const h=harfler[harfNo%harfler.length]; harfNo++;
+  tiklar.push({x,y,h});
+  const gerek={nokta:1,parca:2,isin:2,dogru:2,dikme:3}[mod];
+  if(tiklar.length>=gerek){ cizimler.push({tip:mod,n:[...tiklar]}); tiklar=[]; }
+  ciz();
+});
+
+function noktaCiz(p,renk=R_RECHER){ ctx.fillStyle=renk; ctx.beginPath(); ctx.arc(p.x,p.y,6,0,7); ctx.fill();
+  ctx.fillStyle=R_KOYU; ctx.font='bold 20px Georgia'; ctx.fillText(p.h,p.x+10,p.y-10); }
+function uzat(a,b){ const dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1, k=1200/L;
+  return {x:b.x+dx*k, y:b.y+dy*k}; }
+function ok(a,b,renk){ const ang=Math.atan2(b.y-a.y,b.x-a.x);
+  const kx=Math.min(Math.max(b.x,15),tuval.width-15), ky=Math.min(Math.max(b.y,15),tuval.height-15);
+  ctx.fillStyle=renk; ctx.beginPath();
+  ctx.moveTo(kx,ky); ctx.lineTo(kx-14*Math.cos(ang-0.4),ky-14*Math.sin(ang-0.4));
+  ctx.lineTo(kx-14*Math.cos(ang+0.4),ky-14*Math.sin(ang+0.4)); ctx.fill(); }
+
+function ciz(){
+  ctx.clearRect(0,0,tuval.width,tuval.height);
+  ctx.strokeStyle='rgba(99,102,241,.08)'; ctx.lineWidth=1;
+  for(let x=0;x<tuval.width;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,tuval.height);ctx.stroke();}
+  for(let y=0;y<tuval.height;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(tuval.width,y);ctx.stroke();}
+  ctx.lineWidth=4;
+  cizimler.forEach(c=>{
+    const n=c.n, renkler={parca:R_EMERALD,isin:R_INDIGO,dogru:'#7c3aed',dikme:R_GOLD};
+    ctx.save(); ctx.beginPath(); ctx.rect(0,0,tuval.width,tuval.height); ctx.clip();
+    if(c.tip==='parca'){ ctx.strokeStyle=renkler.parca; ctx.beginPath(); ctx.moveTo(n[0].x,n[0].y); ctx.lineTo(n[1].x,n[1].y); ctx.stroke();
+      etiket(`[${n[0].h}${n[1].h}]`,n); }
+    if(c.tip==='isin'){ const u=uzat(n[0],n[1]); ctx.strokeStyle=renkler.isin; ctx.beginPath(); ctx.moveTo(n[0].x,n[0].y); ctx.lineTo(u.x,u.y); ctx.stroke(); ok(n[0],u,renkler.isin);
+      etiket(`[${n[0].h}${n[1].h}`,n); }
+    if(c.tip==='dogru'){ const u1=uzat(n[1],n[0]), u2=uzat(n[0],n[1]); ctx.strokeStyle=renkler.dogru; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke(); ok(n[0],u1,renkler.dogru); ok(n[0],u2,renkler.dogru);
+      etiket(`${n[0].h}${n[1].h} doğrusu`,n); }
+    if(c.tip==='dikme'){ const A=n[0],B=n[1],P=n[2];
+      const u1=uzat(B,A),u2=uzat(A,B); ctx.strokeStyle=R_SOLUK; ctx.beginPath(); ctx.moveTo(u1.x,u1.y); ctx.lineTo(u2.x,u2.y); ctx.stroke();
+      const dx=B.x-A.x, dy=B.y-A.y, t=((P.x-A.x)*dx+(P.y-A.y)*dy)/(dx*dx+dy*dy);
+      const H={x:A.x+t*dx, y:A.y+t*dy};
+      ctx.strokeStyle=renkler.dikme; ctx.beginPath(); ctx.moveTo(P.x,P.y); ctx.lineTo(H.x,H.y); ctx.stroke();
+      const ux=dx/Math.hypot(dx,dy), uy=dy/Math.hypot(dx,dy);
+      const vx=(P.x-H.x)/Math.hypot(P.x-H.x,P.y-H.y)||0, vy=(P.y-H.y)/Math.hypot(P.x-H.x,P.y-H.y)||0;
+      ctx.strokeStyle=R_RECHER; ctx.lineWidth=2.5; ctx.beginPath();
+      ctx.moveTo(H.x+14*ux,H.y+14*uy); ctx.lineTo(H.x+14*ux+14*vx,H.y+14*uy+14*vy); ctx.lineTo(H.x+14*vx,H.y+14*vy); ctx.stroke(); ctx.lineWidth=4;
+      etiket('⊥ dikme (en kısa yol!)',[P]); }
+    ctx.restore();
+    n.forEach(p=>noktaCiz(p));
+  });
+  tiklar.forEach(p=>noktaCiz(p,R_GOLD));
+}
+function etiket(t,n){ const x=(n[0].x+(n[1]?n[1].x:n[0].x))/2, y=(n[0].y+(n[1]?n[1].y:n[0].y))/2;
+  ctx.font='bold 18px Georgia'; ctx.fillStyle=R_GOLD; ctx.fillText(t,x+12,y-12); }
+ciz();
+
+/* ---------- 2) çember ---------- */
+const ct=document.getElementById('cemberTuval'), cx=ct.getContext('2d');
+const yariCap=document.getElementById('yariCap'), daireKutu=document.getElementById('daireKutu');
+let pergelAci=Math.PI*2;
+function cemberGuncelle(){
+  const r=+yariCap.value;
+  document.getElementById('rEtiket').textContent=r;
+  document.getElementById('capEtiket').textContent=2*r;
+  const mx=220,my=200;
+  cx.clearRect(0,0,ct.width,ct.height);
+  if(daireKutu.checked && pergelAci>=Math.PI*2){ cx.fillStyle='rgba(5,150,105,.18)'; cx.beginPath(); cx.arc(mx,my,r,0,7); cx.fill(); }
+  cx.strokeStyle=R_INDIGO; cx.lineWidth=5; cx.beginPath(); cx.arc(mx,my,r,-Math.PI/2,-Math.PI/2+pergelAci); cx.stroke();
+  cx.fillStyle=R_RECHER; cx.beginPath(); cx.arc(mx,my,6,0,7); cx.fill();
+  cx.fillStyle=R_KOYU; cx.font='bold 18px Georgia'; cx.fillText('M',mx-24,my+6);
+  if(pergelAci>=Math.PI*2){
+    cx.strokeStyle=R_GOLD; cx.lineWidth=4; cx.beginPath(); cx.moveTo(mx,my); cx.lineTo(mx+r*0.707,my-r*0.707); cx.stroke();
+    cx.fillStyle=R_GOLD; cx.fillText('r (yarıçap)',mx+r*0.35,my-r*0.45);
+    cx.strokeStyle=R_EMERALD; cx.beginPath(); cx.moveTo(mx-r,my); cx.lineTo(mx+r,my); cx.stroke();
+    cx.fillStyle=R_EMERALD; cx.fillText('R (çap)',mx-30,my+24);
+  }
+  cx.fillStyle='#7c3aed'; cx.font='bold 16px Comfortaa, sans-serif';
+  cx.fillText(daireKutu.checked?'Bu bir DAİRE 🥧 (içi dolu)':'Bu bir ÇEMBER 💍 (sadece çizgi)',mx-130,382);
+}
+function pergelCiz(){ pergelAci=0;
+  const anim=setInterval(()=>{ pergelAci+=0.12; if(pergelAci>=Math.PI*2){pergelAci=Math.PI*2; clearInterval(anim);} cemberGuncelle(); },25);
+}
+yariCap.oninput=cemberGuncelle; daireKutu.onchange=cemberGuncelle;
+cemberGuncelle();
+
+/* ---------- 3) sembol avı ---------- */
+const havuz=[
+ {g:'[AB]', d:'AB doğru parçası'},
+ {g:'[AB', d:'AB ışını'},
+ {g:'AB ↔', d:'AB doğrusu'},
+ {g:'|AB|', d:'AB doğru parçasının uzunluğu'},
+ {g:'A •', d:'A noktası'},
+ {g:'∠ABC', d:'ABC açısı'},
+ {g:'r', d:'Yarıçap'},
+ {g:'R', d:'Çap'},
+ {g:'[KL] ⊥ MN', d:'KL doğru parçası MN doğrusuna diktir'},
+ {g:'M ⊙', d:'Çemberin merkezi'}
+];
+let sIdx=0, puan1=0, sirali=[];
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+function sembolBaslat(){ sIdx=0; puan1=0; sirali=karistir(havuz); document.getElementById('puan1').textContent=0;
+  document.getElementById('soruKarti').classList.remove('sonucKart'); sembolSoru(); }
+function sembolSoru(){
+  if(sIdx>=10){ bitir('secenekler','soruKarti',puan1,10,sembolBaslat); return; }
+  const dogru=sirali[sIdx];
+  document.getElementById('soruNo').textContent=sIdx+1;
+  document.getElementById('soruKarti').textContent=dogru.g;
+  document.getElementById('geribildirim').textContent='';
+  const yanlislar=karistir(havuz.filter(h=>h.d!==dogru.d)).slice(0,3);
+  const secler=karistir([dogru,...yanlislar]);
+  const kap=document.getElementById('secenekler'); kap.innerHTML='';
+  secler.forEach(s=>{
+    const b=document.createElement('button'); b.textContent=s.d;
+    b.onclick=()=>{
+      if(s.d===dogru.d){ b.classList.add('dogru'); puan1+=10; document.getElementById('puan1').textContent=puan1;
+        document.getElementById('geribildirim').innerHTML='🎉 <span class="gb-dogru">Harika! Doğru!</span>';
+      } else { b.classList.add('yanlis');
+        document.getElementById('geribildirim').innerHTML='😅 <span class="gb-yanlis">Olmadı! Doğrusu: '+dogru.d+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      setTimeout(()=>{ sIdx++; sembolSoru(); },1400);
+    };
+    kap.appendChild(b);
+  });
+}
+function bitir(kapId,kartId,puan,adet,tekrarF){
+  const kap=document.getElementById(kapId); kap.innerHTML='';
+  const kart=document.getElementById(kartId);
+  const mesaj = puan>=adet*8 ? '🏆 Muhteşem! Gerçek bir Geometri Kâşifisin!' : puan>=adet*5 ? '👍 Çok iyi! Biraz daha antrenmanla şampiyon olursun!' : '💪 Olsun! Tekrar dene, her seferinde daha iyi olacaksın!';
+  kart.classList.add('sonucKart');
+  kart.innerHTML='Oyun Bitti!<span class="puanBuyuk">⭐ '+puan+' puan</span>'+mesaj;
+  const b=document.createElement('button'); b.className='tekrar'; b.textContent='🔄 Tekrar Oyna'; b.onclick=tekrarF;
+  kap.appendChild(b); kap.style.display='block'; kap.style.textAlign='center';
+}
+sembolBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'Hangisinin eni, boyu ve derinliği YOKTUR?', c:['Nokta','Doğru parçası','Çember','Daire'], d:0},
+ {s:'İki ucu da sonsuza kadar giden şekle ne denir?', c:['Işın','Doğru','Doğru parçası','Dikme'], d:1},
+ {s:'Bir noktadan başlayıp TEK yönde sonsuza giden şekil hangisidir?', c:['Doğru','Doğru parçası','Işın','Çember'], d:2},
+ {s:'Doğru, doğru parçası ve ışından hangisinin uzunluğu ÖLÇÜLEBİLİR?', c:['Doğru','Işın','Hiçbiri','Doğru parçası'], d:3},
+ {s:'Merkeze eşit uzaklıktaki noktaların oluşturduğu şekle ne denir?', c:['Çember','Daire','Açı','Çokgen'], d:0},
+ {s:'Yarıçapı 4 cm olan çemberin çapı kaç cm olur?', c:['4 cm','2 cm','8 cm','16 cm'], d:2},
+ {s:'Bir noktadan doğruya çizilen EN KISA doğru parçası hangisidir?', c:['Eğik çizgi','Dikme','Işın','Yarıçap'], d:1},
+ {s:'"|KL| = 6 cm" ifadesi ne anlatır?', c:['KL doğrusu 6 tanedir','KL ışını 6 cm gider','K noktası 6 numaradır','KL doğru parçasının uzunluğu 6 cm\'dir'], d:3}
+];
+let qIdx=0, puan2=0, sinavSira=[];
+function sinavBaslat(){ qIdx=0; puan2=0; sinavSira=karistir(sinav); document.getElementById('puan2').textContent=0;
+  document.getElementById('sinavSoru').classList.remove('sonucKart');
+  const kap=document.getElementById('sinavSecenek'); kap.style.display='grid'; sinavSoruGoster(); }
+function sinavSoruGoster(){
+  if(qIdx>=sinavSira.length){ bitir('sinavSecenek','sinavSoru',puan2,8,sinavBaslat); return; }
+  const q=sinavSira[qIdx];
+  document.getElementById('soruNo2').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('geribildirim2').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); puan2+=10; document.getElementById('puan2').textContent=puan2;
+        document.getElementById('geribildirim2').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>';
+      } else { b.classList.add('yanlis');
+        document.getElementById('geribildirim2').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      setTimeout(()=>{ qIdx++; sinavSoruGoster(); },1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

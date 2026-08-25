@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kesir Temsil Makinesi — Kesirleri Farklı Biçimlerde Temsil Etme (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1060px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.kaydirici{display:flex;gap:var(--space-md);justify-content:center;flex-wrap:wrap;margin-bottom:var(--space-sm);font-family:var(--font-headings);font-weight:700}
+canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:inset 0 2px 8px rgba(31,38,135,.05);touch-action:none}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:880px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.turEtiket{font-family:var(--font-headings);font-weight:800;font-size:1.25rem;text-align:center;color:var(--color-emerald-dark);margin-top:var(--space-xs)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-accent);font-weight:800;font-size:1.3rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.2rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.15rem;font-weight:700;max-width:880px;margin:0 auto var(--space-sm);text-align:center}
+.soruMetin .islem{font-family:var(--font-accent);font-size:2rem;font-weight:900;color:var(--color-indigo);display:block;margin-top:.4rem}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+input[type=range]{width:220px;accent-color:var(--color-emerald);height:28px}
+.ucluKutu{display:flex;gap:var(--space-sm);justify-content:center;flex-wrap:wrap;margin-top:var(--space-sm)}
+.ucluKutu .kart{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);text-align:center;min-width:150px}
+.ucluKutu .kart .ad{font-family:var(--font-headings);font-weight:700;font-size:.8rem;color:var(--color-text-muted)}
+.ucluKutu .kart .deger{font-family:var(--font-accent);font-weight:900;font-size:1.9rem;color:var(--color-indigo)}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>🍰 KESİR <span class="vurgu">TEMSİL MAKİNESİ</span></h1>
+    <p>4. Tema · Kesirleri Farklı Biçimlerde Temsil Etme — Kesir, Ondalık Gösterim ve Yüzde</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">🍕 Kesir Modelleyici</button>
+    <button onclick="sayfaAc(1,this)">🔁 Üç Kılık Makinesi</button>
+    <button onclick="sayfaAc(2,this)">🎯 Denk Avı</button>
+    <button onclick="sayfaAc(3,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) KESİR MODELLEYİCİ -->
+  <div class="sayfa aktif" id="s0">
+    <div class="kaydirici">
+      <label>Pay: <input type="range" id="pay" min="1" max="24" value="5" oninput="modelCiz()"> <b id="payV">5</b></label>
+      <label>Payda: <input type="range" id="payda" min="2" max="12" value="2" oninput="modelCiz()"> <b id="paydaV">2</b></label>
+    </div>
+    <canvas class="tuvalC" id="mTuval" width="860" height="380"></canvas>
+    <div class="turEtiket" id="mEtiket"></div>
+    <div class="bilgi">
+      <b>Kesir çeşitleri:</b> Pay &lt; payda → <b>basit kesir</b>. Pay ≥ payda → <b>bileşik kesir</b>; bu kesir <b>tam sayılı kesir</b> olarak da yazılabilir (piknikteki 5 yarım ekmek = <span class="sembol">5/2 = 2 tam 1/2</span>). Aynı miktar, farklı gösterim!
+    </div>
+  </div>
+
+  <!-- 2) ÜÇ KILIK MAKİNESİ -->
+  <div class="sayfa" id="s1">
+    <p class="soruMetin">Aynı miktarın üç kılığı: kesir, ondalık gösterim, yüzde! Kaydır ve izle 👇</p>
+    <div class="kaydirici">
+      <label>Yüzlük tabloda boyalı kare: <input type="range" id="yuzde" min="1" max="100" value="40" oninput="ucluCiz()"> <b id="yuzdeV">40</b></label>
+    </div>
+    <canvas class="tuvalC" id="uTuval" width="420" height="420"></canvas>
+    <div class="ucluKutu">
+      <div class="kart"><div class="ad">KESİR</div><div class="deger" id="uKesir"></div></div>
+      <div class="kart"><div class="ad">ONDALIK</div><div class="deger" id="uOndalik"></div></div>
+      <div class="kart"><div class="ad">YÜZDE</div><div class="deger" id="uYuzde"></div></div>
+    </div>
+    <div class="turEtiket" id="uOkunus"></div>
+    <div class="bilgi"><b>Kural:</b> Paydası 100 olan (ya da 100 yapılabilen) kesirler hem <b>ondalık</b> (virgüllü) hem <b>yüzde</b> (%) olarak yazılabilir: <span class="sembol">40/100 = 0,40 = %40</span>. Virgülden sonra bir basamak = "onda...", iki basamak = "yüzde..." okunur.</div>
+  </div>
+
+  <!-- 3) DENK AVI -->
+  <div class="sayfa" id="s2">
+    <div class="skorbar"><span>⭐ Puan: <b id="aPuan">0</b></span><span>❓ Soru: <b id="aNo">1</b>/10</span></div>
+    <div class="soruMetin">Bu gösterimin DENGİ hangisi? 🔎<span class="islem" id="avIslem"></span></div>
+    <div class="secenekler" id="avSecenek"></div>
+    <div class="geribildirim" id="aGeri"></div>
+  </div>
+
+  <!-- 4) MİNİ SINAV -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 4. Tema: Sayılar ve Nicelikler (2) · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+  if(i===1)ucluCiz();
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+const R_EMERALD='#059669', R_GOLD='#c2410c', R_INDIGO='#6366f1', R_RECHER='#be123c', R_KOYU='#0f172a';
+const LOKATIF={2:'ikide',3:'üçte',4:'dörtte',5:'beşte',6:'altıda',7:'yedide',8:'sekizde',9:'dokuzda',10:'onda',11:'on birde',12:'on ikide',20:'yirmide',25:'yirmi beşte',50:'ellide',100:'yüzde'};
+const SAYIOKU=['sıfır','bir','iki','üç','dört','beş','altı','yedi','sekiz','dokuz','on','on bir','on iki','on üç','on dört','on beş','on altı','on yedi','on sekiz','on dokuz','yirmi','yirmi bir','yirmi iki','yirmi üç','yirmi dört'];
+
+/* ---------- 1) kesir modelleyici ---------- */
+const mT=document.getElementById('mTuval'), mC=mT.getContext('2d');
+function pastaCiz(cx,cy,r,payda,doluBas,doluSay){
+  for(let i=0;i<payda;i++){
+    const a1=-Math.PI/2+i*2*Math.PI/payda, a2=-Math.PI/2+(i+1)*2*Math.PI/payda;
+    mC.beginPath(); mC.moveTo(cx,cy); mC.arc(cx,cy,r,a1,a2); mC.closePath();
+    const dolu=i>=doluBas && i<doluBas+doluSay;
+    mC.fillStyle=dolu?'rgba(5,150,105,.55)':'rgba(255,255,255,.9)';
+    mC.fill(); mC.strokeStyle=R_KOYU; mC.lineWidth=2; mC.stroke();
+  }
+}
+function modelCiz(){
+  const pay=+document.getElementById('pay').value, payda=+document.getElementById('payda').value;
+  document.getElementById('payV').textContent=pay; document.getElementById('paydaV').textContent=payda;
+  mC.clearRect(0,0,mT.width,mT.height);
+  // pasta modelleri (bütünler)
+  const butun=Math.ceil(pay/payda)||1;
+  const gosterilecek=Math.min(butun,5);
+  const r=Math.min(72,340/gosterilecek/2);
+  let kalanPay=pay;
+  for(let b=0;b<gosterilecek;b++){
+    const cx=90+b*(2*r+34), cy=110;
+    const buDolu=Math.max(0,Math.min(payda,kalanPay));
+    pastaCiz(cx,cy,r,payda,0,buDolu);
+    kalanPay-=buDolu;
+  }
+  if(butun>5){ mC.fillStyle=R_KOYU; mC.font='bold 22px Georgia'; mC.fillText('…',90+5*(2*r+34)-20,116); }
+  // sayı doğrusu
+  const y=270, x0=70, x1=mT.width-70;
+  mC.strokeStyle=R_KOYU; mC.lineWidth=3;
+  mC.beginPath(); mC.moveTo(x0,y); mC.lineTo(x1,y); mC.stroke();
+  const maxTam=Math.max(2,Math.ceil(pay/payda));
+  for(let t=0;t<=maxTam;t++){
+    const x=x0+(x1-x0)*t/maxTam;
+    mC.beginPath(); mC.moveTo(x,y-12); mC.lineTo(x,y+12); mC.stroke();
+    mC.fillStyle=R_KOYU; mC.font='bold 16px Comfortaa,sans-serif'; mC.textAlign='center';
+    mC.fillText(t,x,y+34);
+    if(t<maxTam) for(let k=1;k<payda;k++){
+      const xx=x+(x1-x0)/maxTam*k/payda;
+      mC.beginPath(); mC.moveTo(xx,y-6); mC.lineTo(xx,y+6); mC.stroke();
+    }
+  }
+  // kesrin yeri
+  const xk=x0+(x1-x0)*(pay/payda)/maxTam;
+  mC.fillStyle=R_RECHER; mC.beginPath(); mC.arc(xk,y,9,0,7); mC.fill();
+  mC.font='bold 18px Georgia'; mC.fillStyle=R_RECHER; mC.fillText(pay+'/'+payda, xk, y-24);
+  mC.textAlign='left';
+  const tam=Math.floor(pay/payda), kalan=pay%payda;
+  const tur=pay<payda?'BASİT KESİR':'BİLEŞİK KESİR';
+  let ek='';
+  if(pay>=payda) ek=' = '+(kalan===0? tam+' tam' : tam+' tam '+kalan+'/'+payda)+' (tam sayılı)';
+  const okunus=(LOKATIF[payda]||payda+'’da')+' '+(SAYIOKU[pay]||pay);
+  document.getElementById('mEtiket').innerHTML='<b>'+pay+'/'+payda+'</b> → '+tur+ek+' · Okunuşu: "'+okunus+'"';
+}
+modelCiz();
+
+/* ---------- 2) üç kılık makinesi ---------- */
+const uT=document.getElementById('uTuval'), uC=uT.getContext('2d');
+function sadelestir(a,b){ function obeb(x,y){return y?obeb(y,x%y):x;} const g=obeb(a,b); return [a/g,b/g]; }
+function ucluCiz(){
+  const y=+document.getElementById('yuzde').value;
+  document.getElementById('yuzdeV').textContent=y;
+  const BR=38, x0=15, y0=15;
+  uC.clearRect(0,0,uT.width,uT.height);
+  for(let i=0;i<100;i++){
+    const cx=x0+(i%10)*BR, cy=y0+Math.floor(i/10)*BR;
+    uC.fillStyle=i<y?'rgba(5,150,105,.6)':'rgba(255,255,255,.95)';
+    uC.fillRect(cx,cy,BR-3,BR-3);
+    uC.strokeStyle='rgba(99,102,241,.35)'; uC.strokeRect(cx,cy,BR-3,BR-3);
+  }
+  document.getElementById('uKesir').textContent=y+'/100';
+  const ondalik=(y/100).toLocaleString('tr-TR',{minimumFractionDigits:2});
+  document.getElementById('uOndalik').textContent=ondalik;
+  document.getElementById('uYuzde').textContent='%'+y;
+  const [sp,sq]=sadelestir(y,100);
+  let okun='sıfır tam yüzde '+y; if(y===100)okun='bir tam';
+  document.getElementById('uOkunus').innerHTML='Okunuşu: "'+okun+'"'+(sq!==100?' · Sadeleşmiş kesir: <b>'+sp+'/'+sq+'</b>':'');
+}
+ucluCiz();
+
+/* ---------- 3) denk avı ---------- */
+let aIdx=0,aPuan=0;
+const denkHavuz=[
+ // [gösterim, denk doğru, yanlışlar]
+ {g:'1/2', d:'0,5', y:['0,2','%5','2,1']},
+ {g:'%40', d:'40/100', y:['4/100','0,04','40/10']},
+ {g:'0,75', d:'3/4', y:['7/5','3/5','%7,5']},
+ {g:'7/10', d:'0,7', y:['0,07','%7','7,10']},
+ {g:'%25', d:'1/4', y:['1/2','2/5','0,52']},
+ {g:'0,1', d:'1/10', y:['1/100','10/10','%1']},
+ {g:'3/5', d:'%60', y:['%35','%53','0,35']},
+ {g:'86/100', d:'0,86', y:['8,6','0,086','%8,6']},
+ {g:'1,5', d:'3/2', y:['1/5','5/1','15/100']},
+ {g:'%110', d:'11/10', y:['1/10','11/100','0,11']},
+ {g:'0,3', d:'3/10', y:['3/100','1/3','%3']},
+ {g:'2/4', d:'%50', y:['%24','%42','0,24']}
+];
+let avSira=[];
+function avBaslat(){ aIdx=0;aPuan=0;document.getElementById('aPuan').textContent=0; avSira=karistir(denkHavuz).slice(0,10); avSoru(); }
+function avSoru(){
+  if(aIdx>=10){ document.getElementById('avSecenek').innerHTML='';
+    document.getElementById('avIslem').textContent='🏁 Bitti! '+aPuan+' puan';
+    document.getElementById('aGeri').innerHTML='<button class="tekrar" onclick="avBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('aNo').textContent=aIdx+1;
+  document.getElementById('aGeri').textContent='';
+  const q=avSira[aIdx];
+  document.getElementById('avIslem').textContent=q.g;
+  const secler=karistir([q.d,...q.y]);
+  const kap=document.getElementById('avSecenek'); kap.innerHTML='';
+  secler.forEach(s=>{
+    const b=document.createElement('button'); b.textContent=s;
+    b.onclick=()=>{
+      if(s===q.d){ b.classList.add('dogru'); aPuan+=10; document.getElementById('aPuan').textContent=aPuan;
+        document.getElementById('aGeri').innerHTML='🎉 <span class="gb-dogru">Doğru! Aynı miktarın başka kılığı.</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('aGeri').innerHTML='😅 <span class="gb-yanlis">Doğrusu: '+q.d+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      aIdx++; setTimeout(avSoru,1400);
+    };
+    kap.appendChild(b);
+  });
+}
+avBaslat();
+
+/* ---------- 4) mini sınav ---------- */
+const sinav=[
+ {s:'5 kişi yarımşar ekmek yerse toplam kaç ekmek gerekir? (5/2 kesrini tam sayılı yaz)', c:['1 tam 1/2','2 tam 1/2','5 tam 2','2 tam 2/5'], d:1},
+ {s:'"0,7" gösteriminin okunuşu hangisidir?', c:['sıfır virgül yedi','sıfır tam onda yedi','yedide sıfır','sıfır tam yüzde yedi'], d:1},
+ {s:'"4,25" gösteriminde 25 hangi kısımdadır?', c:['Tam kısım','Pay','Ondalık kısım','Payda'], d:2},
+ {s:'50 kuruş, TL cinsinden hangi kesirdir?', c:['50/10','5/100','50/100','100/50'], d:2},
+ {s:'3/4 kesrinin yüzde gösterimi nedir? (3/4 = 75/100)', c:['%34','%43','%75','%25'], d:2},
+ {s:'Paydası 10 olan kesir ondalık yazılırken virgülden sonra kaç basamak olur?', c:['1','2','10','0'], d:0},
+ {s:'Hangisi BİLEŞİK kesirdir?', c:['3/8','7/10','9/4','1/2'], d:2},
+ {s:'"%40 indirim" ifadesindeki %40 hangi kesre eşittir?', c:['4/10 = 40/100','40/10','4/100','1/40'], d:0}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c; b.style.fontFamily="'Comfortaa',sans-serif"; b.style.fontSize='1rem';
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>

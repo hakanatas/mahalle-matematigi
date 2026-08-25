@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mahalle Anketi | İnteraktif Matematik Hikayesi</title>
+<meta name="description" content="5. sınıf — İstatistiksel araştırma süreci: araştırma sorusu, anket, veri toplama. İnteraktif hikaye kitabı.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.75}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:880px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+#kapak{text-align:center;padding:var(--space-lg) var(--space-md)}
+#kapak .ustBaslik{font-family:var(--font-headings);font-weight:700;color:var(--color-emerald);font-size:1rem;letter-spacing:.06em}
+#kapak h1{font-family:var(--font-accent);font-size:2.2rem;font-weight:900;margin:.3rem 0 .8rem}
+#kapak .ozet{max-width:620px;margin:0 auto var(--space-md);color:var(--color-text-muted);font-size:1.02rem}
+.gorsel{display:block;width:100%;max-width:640px;margin:0 auto var(--space-md);border-radius:var(--radius-md);border:1px solid var(--border-glass);box-shadow:0 8px 32px rgba(31,38,135,.12)}
+.gorselYok{max-width:640px;margin:0 auto var(--space-md);padding:var(--space-lg);border:2px dashed var(--border-glass-hover);border-radius:var(--radius-md);color:var(--color-text-muted);font-family:var(--font-headings);font-weight:600;text-align:center;background:rgba(255,255,255,.6)}
+.btn{font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.85rem 2rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;box-shadow:0 0 15px var(--color-emerald-glow);transition:var(--transition-smooth);display:inline-flex;align-items:center;gap:.5rem;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-emerald-light)}
+.btn--altin{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));box-shadow:0 0 15px var(--color-gold-glow)}
+.btn--altin:hover{box-shadow:0 0 25px var(--color-gold)}
+.btn--sade{background:rgba(255,255,255,.8);color:var(--color-text-main);border:1px solid var(--border-glass);box-shadow:none}
+.btn--sade:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+#kitap{display:none}
+.sayfaK{display:none;padding:var(--space-md) var(--space-lg);animation:gel .45s cubic-bezier(.25,.8,.25,1)}
+.sayfaK.aktif{display:block}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.sayfaK p{margin-bottom:1rem;font-size:1.03rem}
+.sayfaK b{color:var(--color-gold-dark)}
+.sayfaK em{color:var(--color-indigo);font-style:italic}
+.kavram{background:rgba(5,150,105,.07);border:1px solid rgba(5,150,105,.25);border-left:6px solid var(--color-emerald);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) 0;font-size:.98rem}
+.kavram b{color:var(--color-emerald-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:1px 8px;border-radius:var(--radius-sm)}
+.sesBtn{margin-top:var(--space-xs)}
+.gezinme{display:flex;justify-content:space-between;align-items:center;padding:var(--space-sm) var(--space-lg);border-top:1px solid var(--border-glass)}
+.gezinme .no{font-family:var(--font-headings);font-weight:700;color:var(--color-text-muted)}
+.okBtn{font-size:1.3rem;width:48px;height:48px;border-radius:50%;border:1px solid var(--border-glass);background:rgba(255,255,255,.8);cursor:pointer;transition:var(--transition-smooth)}
+.okBtn:hover:not(:disabled){border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+.okBtn:disabled{opacity:.35;cursor:default}
+.gorevBaslik{font-family:var(--font-accent);font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:var(--space-xs)}
+.gorevSoru{text-align:center;font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.4rem 1.2rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--space-xs);max-width:760px;margin:0 auto}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#gorevGeri{text-align:center;font-family:var(--font-headings);font-weight:700;font-size:1.15rem;min-height:38px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+#kutlama{display:none;text-align:center;padding:var(--space-md)}
+#kutlama .buyuk{font-family:var(--font-accent);font-size:1.8rem;font-weight:900;color:var(--color-emerald-dark);margin-bottom:var(--space-xs)}
+#kutlama .ozetPanel{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:var(--space-md);max-width:560px;margin:var(--space-sm) auto;text-align:left;font-size:.98rem}
+footer{text-align:center;padding:var(--space-sm);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){#kapak h1{font-size:1.5rem}.sayfaK{padding:var(--space-md)}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+
+<div class="kutu">
+
+  <!-- KAPAK -->
+  <section id="kapak">
+    <p class="ustBaslik">📋 5. TEMA · İSTATİSTİKSEL ARAŞTIRMA SÜRECİ</p>
+    <h1>Mahalle Anketi</h1>
+    <p class="ozet">Parkın boş köşesine ne yapılacak? Kaydırak diyen kaydırak, bank diyen bank diye bağırıyor; meydan yine karıştı. Muhtar kararını verdi: "Bu mahallede karar bağırana göre değil, VERİYE göre alınacak!" Mahalle tarihinin ilk resmî anketi başlıyor — ama önce doğru soruyu sormayı öğrenmek gerek.</p>
+    <img class="gorsel" src="assets/t5k1_kapak.png" alt="Elinde anket panosuyla kapı kapı dolaşan çocuk" onerror="gorselYok(this,'t5k1_kapak.png')">
+    <div style="display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap">
+      <button class="btn" onclick="kitabiAc()">Kitabı Oku 📖</button>
+      <a class="btn btn--sade" href="arac.html">🎮 İnteraktif Araçlar</a>
+      <a class="btn btn--sade" href="../index.html">🏠 Ana Sayfa</a>
+    </div>
+  </section>
+
+  <!-- KİTAP -->
+  <section id="kitap">
+
+    <!-- SAYFA 1 -->
+    <article class="sayfaK aktif" id="sy1">
+      <p>Belediye parkı yeniledi ama bir köşesi boş kaldı; "mahalle karar versin" demişler. İyi de bizim mahalle karar vermeyi bağırarak yapar. Meydanda toplanıldı: Emre <em>"Basket potası!"</em> diye bağırıyor, küçükler <em>"Kaydırak!"</em> diye tempo tutuyor, Mübeccel Teyze balkondan <em>"Bank konacak, çardağı da olacak!"</em> diye kararını çoktan vermiş, dedem de <em>"Bir çiçek bahçesi olsa, sulaması bizden,"</em> diyordu. Herkes konuşuyordu, kimse duymuyordu. Horoz bile öttü; onun oyu sayılmadı.</p>
+      <p>Muhtar hoparlöre koştu, üç boğaz temizleme: <em>"Sayın mahalleli! Bu mahallede karar, sesi çok çıkana göre DEĞİL, veriye göre alınacaktır! TÜİK nasıl bütün ülkeyi sayıyorsa, biz de mahallemizi sayacağız! ANKET yapılacaktır!"</em> Meydanda bir sessizlik oldu. Sonra herkes birden "anket nedir?" diye birbirine sordu.</p>
+      <p>Muhtar bana döndü. Ben deftere uzandım bile. <b>"Anket Genel Sorumlusu"</b> — on birinci unvan. Elif kolları sıvadı: <em>"Abi, buna <b>istatistiksel araştırma</b> denir ve dört adımı vardır: soruyu belirle, veriyi topla, görselleştir, yorumla. Merdiven gibi — hatırlıyor musun?"</em> Hatırlıyordum. Bizim mahallede her şey ya merdiven ya terazi.</p>
+      <img class="gorsel" src="assets/t5k1_sayfa1.png" alt="Meydanda park tartışması" onerror="gorselYok(this,'t5k1_sayfa1.png')">
+      <button class="btn btn--sade sesBtn" onclick="oku(1)">🔊 Sayfayı Oku</button>
+    </article>
+
+    <!-- SAYFA 2 -->
+    <article class="sayfaK" id="sy2">
+      <p>İlk iş: araştırma sorusu. Emre gönüllü oldu; Emre hep gönüllü olur, sorun da genelde burada başlar. İlk denemesi: <em>"En güzel şey nedir?"</em> Elif başını iki yana salladı: <em>"Amaç belirsiz. 'Şey' ne, 'güzel' neye göre? Bu soruyla veri toplanmaz, felsefe toplanır."</em> İkinci deneme: <em>"Kaydırak süper olur, değil mi?"</em> — <em>"Yönlendirici! Cevabı sorunun içine koymuşsun; buna anket değil, propaganda denir."</em> Üçüncü deneme: <em>"Ayşe ne istiyor?"</em> — <em>"Tek kişiye sorulmaz! Bir kişinin cevabı veri değişkenliği taşımaz."</em></p>
+      <p>Emre pes etti: <em>"İyi soru sormak, soru sormaktan zormuş."</em> Dedem onayladı: <em>"En zor zanaat odur evlat. Ustası az bulunur."</em> Sonunda soruyu birlikte yazdık: <b>"Parkın boş köşesine aşağıdakilerden hangisi yapılmalıdır? a) Kaydırak b) Basket potası c) Bank ve çardak ç) Çiçek bahçesi."</b> Elif kontrol listesini işaretledi: Amaç net ✓ Veriyle cevaplanabilir ✓ Tek cevabı yok ✓ Herkese sorulabilir ✓ Yönlendirme yok ✓.</p>
+      <div class="kavram">❓ <b>Defterime not aldım:</b> İyi bir <b>araştırma sorusu</b>: amacı nettir, veri toplanarak cevaplanabilir, tek bir cevabı yoktur, bir kişiye yönelik değildir ve yönlendirme yapmaz. "Değil mi?" ile biten soru anketten çıkarılır!</div>
+      <img class="gorsel" src="assets/t5k1_sayfa2.png" alt="Emre'nin kötü soru denemeleri" onerror="gorselYok(this,'t5k1_sayfa2.png')">
+      <button class="btn btn--sade sesBtn" onclick="oku(2)">🔊 Sayfayı Oku</button>
+    </article>
+
+    <!-- SAYFA 3 -->
+    <article class="sayfaK" id="sy3">
+      <p>Anket günü geldi. Kurallarımızı koyduk: herkese <b>aynı soru</b>, aynı seçenekler; kimseye yorum yok, yönlendirme yok. Ekipler kuruldu: Elif'le ben üst mahalle, Emre'yle Ayşe alt mahalle. Elimizde çizelgeler, kapı kapı dolaştık. Her cevap için <b>çetele</b> attık: dört çizgi, beşincisi üstüne yan çizik — 𝍸. Dedem buna <em>"beşli demet"</em> diyor; sayması kolay oluyor.</p>
+      <p>Zorluklar da çıktı tabii. Cemal Usta <em>"Fırının önüne de bir şey yapılsa?"</em> diye kendi anketini başlatmaya kalktı; kibarca konumuza dönmesini rica ettik. Necmi kargo teslimatı arasında oy verdi: basket potası; <em>"kolileri atmaca çalışırım,"</em> dedi. En büyük kriz Mübeccel Teyze'ydi: <em>"Hepsi olsun,"</em> dedi. Anket kâğıdında "hepsi" seçeneği yoktu. Beş dakikalık müzakere sonunda bank ve çardakta karar kıldı; <em>"ama bankın yönü çeşmeye bakacak,"</em> şerhini de sözlü olarak düştü. Şerhler ayrı deftere yazıldı.</p>
+      <div class="kavram">📋 <b>Defterime not aldım:</b> <b>Ankette</b> herkese aynı soru sorulur, seçenekler nettir. Cevaplar <b>çeteleyle</b> tutulur (𝍸 = 5). Çeteleler sayılınca <b>sıklık tablosu</b> ortaya çıkar: hangi cevaptan kaç tane!</div>
+      <img class="gorsel" src="assets/t5k1_sayfa3.png" alt="Kapı kapı anket ve çetele tutma" onerror="gorselYok(this,'t5k1_sayfa3.png')">
+      <button class="btn btn--sade sesBtn" onclick="oku(3)">🔊 Sayfayı Oku</button>
+    </article>
+
+    <!-- SAYFA 4 -->
+    <article class="sayfaK" id="sy4">
+      <p>Akşam sayım yaptık; kasadaki para sayımından alışkınım, çetele daha kolay. Sıklık tablosu şöyle çıktı: Kaydırak 18, basket potası 15, bank ve çardak 24, çiçek bahçesi 12. Toplam 69 kişi — mahallenin neredeyse tamamı. Elif tabloya baktı: <em>"En çok istenen bank ve çardak. Ama bak, kaydırakla arası sadece 6 oy; küçükler az kalsın kazanıyordu."</em> Veriler konuşunca kavga susuyor; kimse "benim dediğim olacak" diyemedi, çünkü ortada sayılar vardı.</p>
+      <p>Muhtar sonucu hoparlörden ilan etti: <em>"Sayın mahalleli! 69 kişilik veriye göre parkın köşesine BANK VE ÇARDAK yapılacaktır! İkinci gelen kaydırak, gelecek yılın bütçesine yazılmıştır! Veriye itiraz, veriyle yapılır!"</em> O son cümleyi çok sevdim; defterimin kapağına yazdım. Mübeccel Teyze balkondan zafer işareti yaptı; çardağın yerini şimdiden seçmişti bile.</p>
+      <p>Dedem akşam demini alırken sordu: <em>"E, dört adımın neresindesin?"</em> Saydım: soruyu belirledik ✓, veriyi topladık ✓... <em>"Üçüncü adım kaldı: bu tabloyu herkesin bir bakışta anlayacağı bir resme çevirmek. Grafik derler ona. O da başka bir günün işi."</em> Ama önce muhtarın istediği bir şey vardı: anket sürecinin usule uygun yapıldığına dair <b>denetim raporu</b>...</p>
+      <div class="kavram">🗳️ <b>Defterime not aldım:</b> Çeteleler sayılır → <b>sıklık tablosu</b> oluşur → veriler yorumlanır. Veriler konuşunca tartışma biter: karar, bağırana değil <b>sayılara</b> dayanır! Sıradaki adım: veriyi <b>görselleştirmek</b> (grafik!).</div>
+      <img class="gorsel" src="assets/t5k1_sayfa4.png" alt="Sıklık tablosu ve sonucun ilanı" onerror="gorselYok(this,'t5k1_sayfa4.png')">
+      <button class="btn btn--sade sesBtn" onclick="oku(4)">🔊 Sayfayı Oku</button>
+    </article>
+
+    <!-- SAYFA 5: GÖREV -->
+    <article class="sayfaK" id="sy5">
+      <h2 class="gorevBaslik">Anket Denetim Raporu! 🎯</h2>
+      <p style="text-align:center; color:var(--color-text-muted); margin-bottom:1rem">Muhtar sürecin usule uygunluğunu soruyor. Her soruda doğru cevabı seç!</p>
+      <div class="skorbar"><span>⭐ Puan: <b id="gPuan">0</b></span><span>❓ Soru: <b id="gNo">1</b>/5</span></div>
+      <div class="gorevSoru" id="gorevSoru"></div>
+      <div class="secenekler" id="gSecenek"></div>
+      <div id="gorevGeri"></div>
+
+      <div id="kutlama">
+        <p class="buyuk">📋 Süreç Onaylandı!</p>
+        <p>Muhtar rapora mührü bastı: <em>"Bu anket, usulüne uygun yapılmıştır."</em> Bank ve çardak siparişi verildi. Mübeccel Teyze çardağın açılışında kurdele kesmek istediğini şimdiden bildirdi.</p>
+        <div class="ozetPanel">
+          <b>Kâşif Defteri — bugün öğrendiklerimiz:</b><br>
+          • <b>İstatistik</b> = veri toplama, sınıflandırma, görselleştirme, yorumlama bilimi (TÜİK!)<br>
+          • <b>4 adım:</b> Soruyu belirle → Veriyi topla → Görselleştir → Yorumla<br>
+          • İyi araştırma sorusu: net amaç, veriyle cevaplanabilir, tek cevabı yok, kişiye özel değil, yönlendirmesiz<br>
+          • Ankette herkese <b>aynı soru</b>; cevaplar <b>çetele</b> ile (𝍸 = 5)<br>
+          • Çetele → <b>sıklık tablosu</b> → yorum: veriler konuşunca kavga susar!
+        </div>
+        <div style="display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap">
+          <button class="btn btn--altin" onclick="gorevBaslat()">Tekrar Oyna 🔄</button>
+          <a class="btn" href="arac.html">Sıra sende: Araştırma Karargâhı 🎮</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="gezinme">
+      <button class="okBtn" id="geriOk" onclick="sayfaDegis(-1)">⬅️</button>
+      <span class="no">Sayfa <b id="sayfaNo">1</b> / 5</span>
+      <button class="okBtn" id="ileriOk" onclick="sayfaDegis(1)">➡️</button>
+    </div>
+  </section>
+
+  <footer>MEB 5. Sınıf Matematik · 5. Tema: İstatistiksel Araştırma Süreci · İnteraktif Hikaye Kitabı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function gorselYok(img,ad){
+  const d=document.createElement('div'); d.className='gorselYok';
+  d.textContent='🖼️ Görsel buraya gelecek: assets/'+ad;
+  img.replaceWith(d);
+}
+
+let sayfa=1; const SON=5;
+function kitabiAc(){
+  document.getElementById('kapak').style.display='none';
+  document.getElementById('kitap').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function sayfaDegis(y){
+  sesDur();
+  sayfa=Math.min(SON,Math.max(1,sayfa+y));
+  document.querySelectorAll('.sayfaK').forEach(s=>s.classList.remove('aktif'));
+  document.getElementById('sy'+sayfa).classList.add('aktif');
+  document.getElementById('sayfaNo').textContent=sayfa;
+  document.getElementById('geriOk').disabled=(sayfa===1);
+  document.getElementById('ileriOk').disabled=(sayfa===SON);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('geriOk').disabled=true;
+
+function oku(no){
+  sesDur();
+  const metin=[...document.querySelectorAll('#sy'+no+' p, #sy'+no+' .kavram')].map(p=>p.textContent).join(' ');
+  const u=new SpeechSynthesisUtterance(metin); u.lang='tr-TR'; u.rate=.95;
+  speechSynthesis.speak(u);
+}
+function sesDur(){ if('speechSynthesis' in window) speechSynthesis.cancel(); }
+
+/* ---------- görev ---------- */
+const gorevler=[
+  {soru:'Denetim 1: Araştırmamızın İLK adımı neydi?', sec:['Kapı kapı dolaşmak','Araştırma sorusunu belirlemek','Çetele saymak','Sonucu ilan etmek'], d:1, ipucu:'Merdivenin ilk basamağı!'},
+  {soru:'Denetim 2: "Kaydırak süper olur, değil mi?" sorusu neden reddedildi?', sec:['Çok kısaydı','Yönlendiriciydi','Kaydırak pahalıydı','Emre sormuştu'], d:1, ipucu:'Cevap sorunun içinde gizliydi!'},
+  {soru:'Denetim 3: Ankette neden herkese AYNI soru soruldu?', sec:['Kolay olsun diye','Verilerin karşılaştırılabilir olması için','Kağıt yetmediği için','Muhtar öyle istedi'], d:1, ipucu:'Farklı sorular farklı veriler getirir!'},
+  {soru:'Denetim 4: 𝍸 𝍸 𝍸 |||| çetelesi kaç oy demektir?', sec:['15','17','19','34'], d:2, ipucu:'𝍸 = 5. Üç demet + dört çizgi.'},
+  {soru:'Denetim 5: Bank 24, kaydırak 18 oy aldı. Doğru yorum hangisi?', sec:['Kaydırak kazandı','Bank 6 oy farkla en çok istenen oldu','İkisi eşit istendi','Veriler yorumlanamaz'], d:1, ipucu:'24 − 18 = ?'}
+];
+let gIdx=0, gPuan=0;
+function gorevBaslat(){
+  gIdx=0; gPuan=0;
+  document.getElementById('gPuan').textContent=0;
+  document.getElementById('kutlama').style.display='none';
+  document.getElementById('gSecenek').style.display='grid';
+  document.querySelector('#sy5 .gorevSoru').style.display='block';
+  gorevGoster();
+}
+function gorevGoster(){
+  if(gIdx>=gorevler.length){
+    document.getElementById('gSecenek').style.display='none';
+    document.querySelector('#sy5 .gorevSoru').style.display='none';
+    document.getElementById('gorevGeri').textContent='';
+    document.getElementById('kutlama').style.display='block';
+    return;
+  }
+  document.getElementById('gNo').textContent=gIdx+1;
+  const g=gorevler[gIdx];
+  document.getElementById('gorevSoru').innerHTML=g.soru+'<br><span style="color:var(--color-gold);font-size:.9rem">İpucu: '+g.ipucu+'</span>';
+  document.getElementById('gorevGeri').textContent='';
+  const kap=document.getElementById('gSecenek'); kap.innerHTML='';
+  g.sec.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===g.d){ b.classList.add('dogru'); gPuan+=10; document.getElementById('gPuan').textContent=gPuan;
+        document.getElementById('gorevGeri').innerHTML='🎉 <span class="gb-dogru">Doğru! Rapora işlendi.</span>';
+        kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+        gIdx++;
+        setTimeout(gorevGoster,1400);
+      } else { b.classList.add('yanlis'); b.disabled=true;
+        document.getElementById('gorevGeri').innerHTML='😅 <span class="gb-yanlis">Tekrar düşün, usule dikkat!</span>'; }
+    };
+    kap.appendChild(b);
+  });
+}
+gorevGoster();
+</script>
+</body>
+</html>

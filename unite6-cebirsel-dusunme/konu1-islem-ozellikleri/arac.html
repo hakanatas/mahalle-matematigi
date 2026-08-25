@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İşlem Atölyesi — Cebirsel Düşünme (5. Sınıf)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
+:root {
+  --bg-card: rgba(255,255,255,.9); --border-glass: rgba(99,102,241,.2); --border-glass-hover: rgba(99,102,241,.45);
+  --color-emerald:#059669; --color-emerald-light:#10b981; --color-emerald-dark:#047857; --color-emerald-glow:rgba(5,150,105,.15);
+  --color-gold:#c2410c; --color-gold-light:#ea580c; --color-gold-dark:#9a3412; --color-gold-glow:rgba(194,65,12,.15);
+  --color-recher:#be123c; --color-recher-glow:rgba(190,18,60,.15); --color-indigo:#6366f1;
+  --color-text-main:#0f172a; --color-text-muted:#475569;
+  --space-xs:.5rem; --space-sm:1rem; --space-md:1.5rem; --space-lg:2.5rem;
+  --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+  --transition-smooth: all .35s cubic-bezier(.25,.8,.25,1);
+  --font-main:'Comfortaa',sans-serif; --font-headings:'Baloo 2','Comfortaa',sans-serif; --font-accent:'Playfair Display',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:linear-gradient(135deg,#e0e7ff 0%,#fae8ff 45%,#fef3c7 100%);background-attachment:fixed;color:var(--color-text-main);font-family:var(--font-main);min-height:100vh;line-height:1.6}
+body{padding:var(--space-md) var(--space-sm)}
+#arkaplanCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.kutu{position:relative;z-index:10;max-width:1060px;margin:0 auto;background:var(--bg-card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border-glass);border-radius:var(--radius-lg);box-shadow:0 8px 32px 0 rgba(31,38,135,.12);overflow:hidden}
+header{text-align:center;padding:var(--space-lg) var(--space-md) var(--space-md);background:linear-gradient(180deg,rgba(99,102,241,.08),transparent)}
+header h1{font-family:var(--font-accent);font-size:2.1rem;font-weight:800;letter-spacing:.03em}
+header h1 .vurgu{color:var(--color-gold)}
+header p{font-family:var(--font-main);font-size:.95rem;color:var(--color-text-muted);margin-top:6px}
+nav{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;padding:0 var(--space-md) var(--space-md)}
+nav button{font-family:var(--font-headings);font-weight:700;font-size:1rem;padding:.7rem 1.4rem;border-radius:22px;cursor:pointer;background:rgba(255,255,255,.7);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+nav button:hover{border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 10px rgba(16,185,129,.2)}
+nav button.aktif{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-emerald-glow)}
+nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;border-color:transparent;box-shadow:0 0 15px var(--color-gold-glow)}
+.sayfa{display:none;padding:var(--space-md)}
+.sayfa.aktif{display:block;animation:gel .4s cubic-bezier(.25,.8,.25,1)}
+@keyframes gel{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+.kaydirici{display:flex;gap:var(--space-sm);justify-content:center;flex-wrap:wrap;margin-bottom:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:.9rem}
+canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255,255,.95);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:inset 0 2px 8px rgba(31,38,135,.05);touch-action:none}
+.bilgi{background:rgba(255,255,255,.75);border:1px solid var(--border-glass);border-left:6px solid var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);margin:var(--space-sm) auto 0;max-width:880px;font-size:1.02rem;color:var(--color-text-muted)}
+.bilgi b{color:var(--color-gold-dark)}
+.sembol{font-family:var(--font-accent);font-weight:700;background:rgba(99,102,241,.1);color:var(--color-indigo);padding:2px 9px;border-radius:var(--radius-sm)}
+.skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+.skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
+.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
+.secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
+.secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;animation:zipla .45s}
+.secenekler button.yanlis{background:linear-gradient(135deg,var(--color-recher),#9f1239);color:#fff!important;border-color:transparent;animation:salla .45s}
+@keyframes zipla{30%{transform:scale(1.05)}}
+@keyframes salla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.geribildirim{text-align:center;font-family:var(--font-headings);font-size:1.15rem;font-weight:700;min-height:40px;margin-top:var(--space-sm)}
+.gb-dogru{color:var(--color-emerald)}.gb-yanlis{color:var(--color-recher)}
+.soruMetin{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-radius:var(--radius-md);box-shadow:0 8px 32px 0 rgba(31,38,135,.1);padding:var(--space-md);font-family:var(--font-headings);font-size:1.15rem;font-weight:700;max-width:880px;margin:0 auto var(--space-sm);text-align:center}
+.ifadeBuyuk{font-family:var(--font-accent);font-size:2rem;font-weight:900;text-align:center;margin:var(--space-sm) 0;color:var(--color-indigo)}
+.tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
+.tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
+.tBtnGrup{display:flex;flex-wrap:wrap;gap:var(--space-xs);justify-content:center;margin-top:var(--space-sm)}
+.tBtnGrup button{font-family:var(--font-headings);font-weight:700;font-size:.95rem;padding:.65rem 1.1rem;border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border-glass);background:rgba(255,255,255,.85);color:var(--color-text-main);transition:var(--transition-smooth)}
+.tBtnGrup button:hover{transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald)}
+.tBtnGrup button.tehlike{border-color:rgba(190,18,60,.4);color:var(--color-recher)}
+.tBtnGrup button.tehlike:hover{border-color:var(--color-recher);box-shadow:0 0 10px var(--color-recher-glow);color:var(--color-recher)}
+input[type=range]{width:150px;accent-color:var(--color-emerald);height:26px}
+footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
+@media(max-width:640px){header h1{font-size:1.4rem}.ifadeBuyuk{font-size:1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="arkaplanCanvas"></canvas>
+<div class="kutu">
+  <header>
+    <h1>⚖️ İŞLEM <span class="vurgu">ATÖLYESİ</span></h1>
+    <p>6. Tema · Cebirsel Düşünme — Eşitliğin Korunumu, İşlem Özellikleri, Üslü İfadeler ve İşlem Önceliği</p>
+  </header>
+  <nav>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
+    <button class="aktif" onclick="sayfaAc(0,this)">⚖️ Denge Terazisi</button>
+    <button onclick="sayfaAc(1,this)">🔍 Özellik Dedektifi</button>
+    <button onclick="sayfaAc(2,this)">🔢 Kare &amp; Küp</button>
+    <button onclick="sayfaAc(3,this)">🚦 İşlem Önceliği</button>
+    <button onclick="sayfaAc(4,this)">🏆 Mini Sınav</button>
+  </nav>
+
+  <!-- 1) DENGE TERAZİSİ -->
+  <div class="sayfa aktif" id="s0">
+    <p class="soruMetin">Dede'nin terazisi dengede: iki kefede de eşit kütle var. Butonlarla oyna — eşitlik ne zaman korunur, ne zaman bozulur? ⚖️</p>
+    <canvas class="tuvalC" id="tTuval" width="820" height="380"></canvas>
+    <div class="tBtnGrup">
+      <button onclick="ikiTaraf('+',5)">➕ İki kefeye de +5</button>
+      <button onclick="ikiTaraf('-',3)">➖ İki kefeden de −3</button>
+      <button onclick="ikiTaraf('*',2)">✖️ İki kefeyi de ×2</button>
+      <button class="tehlike" onclick="tekTaraf('sol',4)">⚠️ Sadece SOL kefeye +4</button>
+      <button class="tehlike" onclick="tekTaraf('sag',4)">⚠️ Sadece SAĞ kefeye +4</button>
+      <button onclick="teraziSifirla()">🔄 Sıfırla</button>
+    </div>
+    <div class="geribildirim" id="tMesaj"></div>
+    <div class="bilgi"><b>Eşitliğin korunumu:</b> Bir eşitliğin her iki tarafına aynı sayı eklenir, her iki tarafından aynı sayı çıkarılır, her iki tarafı aynı sayıyla çarpılır veya bölünürse <b>eşitlik korunur</b>. Tek tarafa dokunursan denge bozulur!</div>
+  </div>
+
+  <!-- 2) ÖZELLİK DEDEKTİFİ -->
+  <div class="sayfa" id="s1">
+    <div class="skorbar"><span>⭐ Puan: <b id="oPuan">0</b></span><span>❓ Soru: <b id="oNo">1</b>/8</span></div>
+    <p class="soruMetin">Bu eşitlikte hangi işlem özelliği kullanılmış? Dedektif gibi incele! 🔍</p>
+    <div class="ifadeBuyuk" id="oIfade"></div>
+    <div class="secenekler" id="oSecenek" style="grid-template-columns:repeat(3,minmax(140px,1fr));max-width:640px"></div>
+    <div class="geribildirim" id="oGeri"></div>
+    <div class="bilgi"><b>Değişme:</b> sayıların yeri değişir, sonuç değişmez (a+b = b+a). <b>Birleşme:</b> parantezle gruplama değişir, sonuç değişmez ((a+b)+c = a+(b+c)). <b>Dağılma:</b> çarpma, toplama/çıkarma üzerine dağılır (a×(b+c) = a×b + a×c).</div>
+  </div>
+
+  <!-- 3) KARE & KÜP -->
+  <div class="sayfa" id="s2">
+    <p class="soruMetin">Kaydırıcıyı oynat: kare büyüsün, küp yükselsin! Üslü ifadenin resmi budur 🔢</p>
+    <div class="kaydirici">
+      <label style="color:#047857">Sayı (n): <input type="range" id="usN" min="1" max="8" value="3" oninput="usCiz()"> <b id="usNV">3</b></label>
+    </div>
+    <canvas class="tuvalC" id="uTuval" width="820" height="420"></canvas>
+    <div class="bilgi"><b>Üslü ifade:</b> Bir sayının <b>karesi</b> = kendisiyle 1 kez çarpımı: 4² = 4×4 = 16 ("dördün karesi"). Bir sayının <b>küpü</b> = kendisiyle 2 kez çarpımı: 3³ = 3×3×3 = 27 ("üçün küpü"). Kare, karo döşemektir; küp, kutu istiflemektir!</div>
+  </div>
+
+  <!-- 4) İŞLEM ÖNCELİĞİ -->
+  <div class="sayfa" id="s3">
+    <div class="skorbar"><span>⭐ Puan: <b id="pPuan">0</b></span><span>🧮 İfade: <b id="pNo">1</b>/6</span></div>
+    <p class="soruMetin">Matematiğin trafik kuralı: hangi işlem ÖNCE yapılır? Sırayla tıkla, ifadeyi adım adım çöz! 🚦</p>
+    <div class="ifadeBuyuk" id="pIfade"></div>
+    <div class="secenekler" id="pSecenek" style="max-width:640px"></div>
+    <div class="geribildirim" id="pGeri"></div>
+    <div class="bilgi"><b>İşlem önceliği sırası:</b> 1) Parantez içi → 2) Üslü ifadeler → 3) Çarpma/Bölme (aynı öncelik, soldan sağa) → 4) Toplama/Çıkarma (aynı öncelik, soldan sağa).</div>
+  </div>
+
+  <!-- 5) MİNİ SINAV -->
+  <div class="sayfa" id="s4">
+    <div class="skorbar"><span>⭐ Puan: <b id="qPuan">0</b></span><span>❓ Soru: <b id="qNo">1</b>/8</span></div>
+    <div class="soruMetin" id="sinavSoru"></div>
+    <div class="secenekler" id="sinavSecenek"></div>
+    <div class="geribildirim" id="qGeri"></div>
+  </div>
+
+  <footer>MEB 5. Sınıf Matematik · 6. Tema: İşlemlerle Cebirsel Düşünme · Öğretmen aracı 💛</footer>
+</div>
+
+<script>
+/* ---------- dinamik arka plan ---------- */
+(function(){
+  const c=document.getElementById('arkaplanCanvas'), g=c.getContext('2d');
+  let W,H; const fare={x:-999,y:-999};
+  function boyutla(){ W=c.width=innerWidth; H=c.height=innerHeight; }
+  boyutla(); addEventListener('resize',boyutla);
+  addEventListener('pointermove',e=>{ fare.x=e.clientX; fare.y=e.clientY; });
+  const renkler=['rgba(99,102,241,ALFA)','rgba(5,150,105,ALFA)','rgba(194,65,12,ALFA)','rgba(124,58,237,ALFA)'];
+  const tipler=['cember','ucgen','kare','nokta','arti'];
+  const sekiller=[]; const ADET=Math.min(46,Math.floor(innerWidth/30));
+  for(let i=0;i<ADET;i++){ sekiller.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:6+Math.random()*22,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,don:Math.random()*Math.PI*2,donHiz:(Math.random()-.5)*.008,tip:tipler[i%tipler.length],renk:renkler[i%renkler.length],alfa:.08+Math.random()*.14,faz:Math.random()*Math.PI*2}); }
+  function sekilCiz(s,t){ const nefes=1+Math.sin(t*.001+s.faz)*.12,r=s.r*nefes;
+    g.save();g.translate(s.x,s.y);g.rotate(s.don);
+    g.strokeStyle=s.renk.replace('ALFA',s.alfa.toFixed(3));g.fillStyle=s.renk.replace('ALFA',(s.alfa*.55).toFixed(3));g.lineWidth=2;g.beginPath();
+    if(s.tip==='cember'){g.arc(0,0,r,0,7);}else if(s.tip==='ucgen'){g.moveTo(0,-r);g.lineTo(r*.87,r*.5);g.lineTo(-r*.87,r*.5);g.closePath();}
+    else if(s.tip==='kare'){g.rect(-r*.7,-r*.7,r*1.4,r*1.4);}else if(s.tip==='nokta'){g.arc(0,0,r*.25,0,7);g.fill();}
+    else{g.moveTo(-r,0);g.lineTo(r,0);g.moveTo(0,-r);g.lineTo(0,r);}
+    if(s.tip!=='nokta'){g.fill();g.stroke();}g.restore(); }
+  function dongu(t){ g.clearRect(0,0,W,H);
+    for(let i=0;i<sekiller.length;i++)for(let j=i+1;j<sekiller.length;j++){const a=sekiller[i],b=sekiller[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){g.strokeStyle='rgba(99,102,241,'+(0.06*(1-d/130)).toFixed(3)+')';g.lineWidth=1;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke();}}
+    sekiller.forEach(s=>{s.x+=s.vx;s.y+=s.vy;s.don+=s.donHiz;
+      const df=Math.hypot(s.x-fare.x,s.y-fare.y);
+      if(df<110&&df>0){s.x+=(s.x-fare.x)/df*.6;s.y+=(s.y-fare.y)/df*.6;}
+      if(s.x<-40)s.x=W+40;if(s.x>W+40)s.x=-40;if(s.y<-40)s.y=H+40;if(s.y>H+40)s.y=-40;
+      sekilCiz(s,t);});
+    requestAnimationFrame(dongu); }
+  requestAnimationFrame(dongu);
+})();
+
+function sayfaAc(i,btn){
+  document.querySelectorAll('.sayfa').forEach(s=>s.classList.remove('aktif'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('aktif'));
+  document.getElementById('s'+i).classList.add('aktif'); btn.classList.add('aktif');
+  if(i===2)usCiz();
+}
+function karistir(a){ return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]); }
+const R_KOYU='#0f172a', R_SOLUK='#475569';
+
+/* ---------- 1) denge terazisi ---------- */
+const tT=document.getElementById('tTuval'), tC=tT.getContext('2d');
+let solD=12, sagD=12, solIfade='12', sagIfade='12', tAci=0, tHedefAci=0;
+function ikiTaraf(op,n){
+  if(op==='+'){ solD+=n; sagD+=n; solIfade+=' + '+n; sagIfade+=' + '+n; }
+  else if(op==='-'){ solD-=n; sagD-=n; solIfade+=' − '+n; sagIfade+=' − '+n; }
+  else { solD*=n; sagD*=n; solIfade='('+solIfade+') × '+n; sagIfade='('+sagIfade+') × '+n; }
+  mesajYaz(true);
+}
+function tekTaraf(taraf,n){
+  if(taraf==='sol'){ solD+=n; solIfade+=' + '+n; } else { sagD+=n; sagIfade+=' + '+n; }
+  mesajYaz(false);
+}
+function teraziSifirla(){ solD=12; sagD=12; solIfade='12'; sagIfade='12';
+  document.getElementById('tMesaj').textContent=''; }
+function mesajYaz(korunur){
+  const m=document.getElementById('tMesaj');
+  if(solD===sagD) m.innerHTML='✅ <span class="gb-dogru">Denge korunuyor! İki tarafa aynı işlem = eşitlik korunur.</span>';
+  else m.innerHTML='🚨 <span class="gb-yanlis">Denge bozuldu! Tek tarafa işlem yaparsan eşitlik korunmaz.</span>';
+}
+function teraziCiz(){
+  const W=tT.width,H=tT.height, cx=W/2, tepeY=70;
+  tHedefAci=Math.max(-0.16,Math.min(0.16,(sagD-solD)*0.012));
+  tAci+=(tHedefAci-tAci)*0.08;
+  tC.clearRect(0,0,W,H);
+  // ayak
+  tC.fillStyle='#7c5a3a';
+  tC.beginPath(); tC.moveTo(cx-14,tepeY); tC.lineTo(cx+14,tepeY); tC.lineTo(cx+44,H-40); tC.lineTo(cx-44,H-40); tC.closePath(); tC.fill();
+  tC.fillRect(cx-110,H-40,220,14);
+  // kiriş
+  const kol=270;
+  const sx=cx-Math.cos(tAci)*kol, sy=tepeY-Math.sin(tAci)*kol*-1;
+  const gx=cx+Math.cos(tAci)*kol, gy=tepeY+Math.sin(tAci)*kol;
+  const solY=tepeY - Math.sin(tAci)*kol, sagY=tepeY + Math.sin(tAci)*kol;
+  tC.strokeStyle='#9a3412'; tC.lineWidth=10; tC.lineCap='round';
+  tC.beginPath(); tC.moveTo(cx-Math.cos(tAci)*kol, solY); tC.lineTo(cx+Math.cos(tAci)*kol, sagY); tC.stroke();
+  tC.fillStyle='#c2410c'; tC.beginPath(); tC.arc(cx,tepeY,12,0,7); tC.fill();
+  // kefeler
+  function kefe(x,y,deger,ifade,renk){
+    tC.strokeStyle='#64748b'; tC.lineWidth=2.5;
+    tC.beginPath(); tC.moveTo(x,y); tC.lineTo(x-52,y+92); tC.moveTo(x,y); tC.lineTo(x+52,y+92); tC.stroke();
+    tC.fillStyle=renk;
+    tC.beginPath(); tC.ellipse(x,y+100,72,22,0,0,7); tC.fill();
+    tC.strokeStyle='rgba(15,23,42,.25)'; tC.stroke();
+    tC.fillStyle='#fff'; tC.font='900 22px Georgia'; tC.textAlign='center';
+    tC.fillText(deger+' kg', x, y+107);
+    tC.fillStyle=R_KOYU; tC.font='bold 15px Comfortaa,sans-serif';
+    tC.fillText(ifade, x, y-16);
+  }
+  kefe(cx-Math.cos(tAci)*kol, solY, solD, solIfade, '#059669');
+  kefe(cx+Math.cos(tAci)*kol, sagY, sagD, sagIfade, '#6366f1');
+  // durum ibresi
+  tC.fillStyle=R_SOLUK; tC.font='bold 15px Comfortaa,sans-serif'; tC.textAlign='center';
+  tC.fillText(solD===sagD ? '⚖️ DENGEDE: '+solD+' = '+sagD : '⚠️ DENGE BOZUK: '+solD+' ≠ '+sagD, cx, H-12);
+  requestAnimationFrame(teraziCiz);
+}
+teraziCiz();
+
+/* ---------- 2) özellik dedektifi ---------- */
+const OZELLIK=[
+  {e:'25 + 35 = 35 + 25', d:0},
+  {e:'9 × 7 = 7 × 9', d:0},
+  {e:'13 + 8 = 8 + 13', d:0},
+  {e:'11 × 6 = 6 × 11', d:0},
+  {e:'(12 + 15) + 21 = 12 + (15 + 21)', d:1},
+  {e:'(8 × 5) × 7 = 8 × (5 × 7)', d:1},
+  {e:'20 × (15 × 12) = (20 × 15) × 12', d:1},
+  {e:'(26 + 38) + 52 = 26 + (38 + 52)', d:1},
+  {e:'15 × (25 + 12) = 15×25 + 15×12', d:2},
+  {e:'7 × (8 + 3) = 7×8 + 7×3', d:2},
+  {e:'6 × (10 − 2) = 6×10 − 6×2', d:2},
+  {e:'5 × (9 − 4) = 5×9 − 5×4', d:2}
+];
+const OZ_AD=['🔄 Değişme','🤝 Birleşme','📦 Dağılma'];
+const OZ_NEDEN=['Sayıların yeri değişti, sonuç değişmedi.','Parantezle gruplama değişti, sonuç değişmedi.','Çarpma, parantezin içine dağıtıldı.'];
+let oIdx=0,oPuan=0,oSira=[];
+function oBaslat(){ oIdx=0;oPuan=0;oSira=karistir(OZELLIK).slice(0,8);
+  document.getElementById('oPuan').textContent=0; oGoster(); }
+function oGoster(){
+  if(oIdx>=oSira.length){ document.getElementById('oSecenek').innerHTML='';
+    document.getElementById('oIfade').textContent='🏁';
+    document.getElementById('oGeri').innerHTML='Dedektiflik bitti! Toplam <b>'+oPuan+'</b> puan. <button class="tekrar" onclick="oBaslat()">Tekrar Oyna 🔄</button>'; return; }
+  document.getElementById('oNo').textContent=oIdx+1;
+  document.getElementById('oGeri').textContent='';
+  const q=oSira[oIdx];
+  document.getElementById('oIfade').textContent=q.e;
+  const kap=document.getElementById('oSecenek'); kap.innerHTML='';
+  OZ_AD.forEach((ad,i)=>{
+    const b=document.createElement('button'); b.textContent=ad;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); oPuan+=10; document.getElementById('oPuan').textContent=oPuan;
+        document.getElementById('oGeri').innerHTML='🎉 <span class="gb-dogru">Doğru! '+OZ_NEDEN[q.d]+'</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('oGeri').innerHTML='😅 <span class="gb-yanlis">Bu '+OZ_AD[q.d].split(' ')[1]+' özelliği: '+OZ_NEDEN[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      oIdx++; setTimeout(oGoster,2000);
+    };
+    kap.appendChild(b);
+  });
+}
+oBaslat();
+
+/* ---------- 3) kare & küp ---------- */
+const uT=document.getElementById('uTuval'), uC=uT.getContext('2d');
+function usCiz(){
+  const n=+document.getElementById('usN').value;
+  document.getElementById('usNV').textContent=n;
+  const W=uT.width,H=uT.height;
+  uC.clearRect(0,0,W,H);
+  // sol: kare (n x n karo)
+  const alan=230, hucre=Math.min(34, alan/n), kx=90, ky=90;
+  uC.fillStyle=R_KOYU; uC.font='bold 19px Comfortaa,sans-serif'; uC.textAlign='left';
+  uC.fillText('KARE: '+n+'² = '+n+' × '+n+' = '+(n*n), 60, 46);
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+    uC.fillStyle='rgba(5,150,105,'+(0.55+0.4*((r+c)%2)).toFixed(2)+')';
+    uC.fillRect(kx+c*hucre, ky+r*hucre, hucre-3, hucre-3);
+  }
+  uC.fillStyle=R_SOLUK; uC.font='bold 14px Comfortaa,sans-serif';
+  uC.fillText(n+' satır × '+n+' sütun = '+(n*n)+' karo', 60, ky+n*hucre+34);
+  uC.fillText('Okunuşu: "'+OKUNUS[n]+' karesi"', 60, ky+n*hucre+58);
+  // sağ: küp (n katman, izometrik top yığını)
+  uC.fillStyle=R_KOYU; uC.font='bold 19px Comfortaa,sans-serif';
+  uC.fillText('KÜP: '+n+'³ = '+n+' × '+n+' × '+n+' = '+(n*n*n), 470, 46);
+  const top=Math.min(15, 96/n), bx=520, by=330;
+  for(let kat=0;kat<n;kat++){
+    for(let r=n-1;r>=0;r--)for(let c=0;c<n;c++){
+      const x=bx + c*top*1.7 + r*top*0.85;
+      const y=by - kat*top*1.5 - r*top*0.85;
+      const grd=uC.createRadialGradient(x-3,y-3,1,x,y,top*0.95);
+      grd.addColorStop(0,'#a5b4fc'); grd.addColorStop(1,'#4338ca');
+      uC.fillStyle=grd;
+      uC.beginPath(); uC.arc(x,y,top*0.82,0,7); uC.fill();
+    }
+  }
+  uC.fillStyle=R_SOLUK; uC.font='bold 14px Comfortaa,sans-serif';
+  uC.fillText(n+' en × '+n+' boy × '+n+' kat = '+(n*n*n)+' top', 470, 372);
+  uC.fillText('Okunuşu: "'+OKUNUS[n]+' küpü"', 470, 396);
+}
+const OKUNUS={1:'birin',2:'ikinin',3:'üçün',4:'dördün',5:'beşin',6:'altının',7:'yedinin',8:'sekizin'};
+usCiz();
+
+/* ---------- 4) işlem önceliği ---------- */
+const IFADELER=[
+  {ifade:'72 ÷ (5 + 4)', adimlar:[
+    {sec:['Parantez içi: 5 + 4','Bölme: 72 ÷ 5'], d:0, sonuc:'72 ÷ 9', neden:'Önce PARANTEZ içi yapılır!'},
+    {sec:['Bölme: 72 ÷ 9','Çıkarma: 72 − 9'], d:0, sonuc:'8', neden:'Tek işlem kaldı: bölme.'}
+  ]},
+  {ifade:'2 × 3 + 4 × 5', adimlar:[
+    {sec:['Toplama: 3 + 4','Çarpma: 2 × 3 (soldaki)'], d:1, sonuc:'6 + 4 × 5', neden:'Çarpma, toplamadan ÖNCE gelir; soldan başlanır.'},
+    {sec:['Toplama: 6 + 4','Çarpma: 4 × 5'], d:1, sonuc:'6 + 20', neden:'Hâlâ çarpma var — önce o!'},
+    {sec:['Toplama: 6 + 20','Çarpma: 6 × 20'], d:0, sonuc:'26', neden:'Artık sadece toplama kaldı.'}
+  ]},
+  {ifade:'5² + 12 ÷ 4', adimlar:[
+    {sec:['Üs: 5² = 25','Bölme: 12 ÷ 4','Toplama: 5 + 12'], d:0, sonuc:'25 + 12 ÷ 4', neden:'Parantez yok, öyleyse önce ÜSLÜ ifade!'},
+    {sec:['Toplama: 25 + 12','Bölme: 12 ÷ 4'], d:1, sonuc:'25 + 3', neden:'Bölme, toplamadan önce gelir.'},
+    {sec:['Toplama: 25 + 3','Çarpma: 25 × 3'], d:0, sonuc:'28', neden:'Son adım: toplama.'}
+  ]},
+  {ifade:'10 × (9 − 3)', adimlar:[
+    {sec:['Parantez içi: 9 − 3','Çarpma: 10 × 9'], d:0, sonuc:'10 × 6', neden:'Önce PARANTEZ içi!'},
+    {sec:['Çarpma: 10 × 6','Toplama: 10 + 6'], d:0, sonuc:'60', neden:'Tek işlem kaldı: çarpma.'}
+  ]},
+  {ifade:'4 + 3 × 2²', adimlar:[
+    {sec:['Toplama: 4 + 3','Üs: 2² = 4','Çarpma: 3 × 2'], d:1, sonuc:'4 + 3 × 4', neden:'Sıra: parantez → ÜS → çarpma → toplama.'},
+    {sec:['Toplama: 4 + 3','Çarpma: 3 × 4'], d:1, sonuc:'4 + 12', neden:'Çarpma, toplamadan önce!'},
+    {sec:['Toplama: 4 + 12','Çıkarma: 12 − 4'], d:0, sonuc:'16', neden:'Son adım: toplama.'}
+  ]},
+  {ifade:'15 ÷ 3 − 12 ÷ 4', adimlar:[
+    {sec:['Soldaki bölme: 15 ÷ 3','Çıkarma: 3 − 12'], d:0, sonuc:'5 − 12 ÷ 4', neden:'Bölme önce; aynı öncelikte SOLDAN başlanır.'},
+    {sec:['Çıkarma: 5 − 12','Bölme: 12 ÷ 4'], d:1, sonuc:'5 − 3', neden:'Hâlâ bölme var — önce o!'},
+    {sec:['Çıkarma: 5 − 3','Çarpma: 5 × 3'], d:0, sonuc:'2', neden:'Son adım: çıkarma.'}
+  ]}
+];
+let pIfadeIdx=0, pAdim=0, pPuan=0;
+function pBaslat(){ pIfadeIdx=0; pAdim=0; pPuan=0;
+  document.getElementById('pPuan').textContent=0; pGoster(); }
+function pGoster(){
+  if(pIfadeIdx>=IFADELER.length){
+    document.getElementById('pSecenek').innerHTML='';
+    document.getElementById('pIfade').textContent='🏁';
+    document.getElementById('pGeri').innerHTML='Trafik tamam! Toplam <b>'+pPuan+'</b> puan. <button class="tekrar" onclick="pBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const I=IFADELER[pIfadeIdx];
+  document.getElementById('pNo').textContent=pIfadeIdx+1;
+  document.getElementById('pIfade').textContent = pAdim===0 ? I.ifade : I.adimlar[pAdim-1].sonuc;
+  document.getElementById('pGeri').textContent='';
+  const A=I.adimlar[pAdim];
+  const kap=document.getElementById('pSecenek'); kap.innerHTML='';
+  A.sec.forEach((s,i)=>{
+    const b=document.createElement('button'); b.textContent=s;
+    b.onclick=()=>{
+      if(i===A.d){ b.classList.add('dogru'); pPuan+=10; document.getElementById('pPuan').textContent=pPuan;
+        document.getElementById('pGeri').innerHTML='🎉 <span class="gb-dogru">'+A.neden+' → '+A.sonuc+'</span>';
+        kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+        pAdim++;
+        if(pAdim>=I.adimlar.length){ pIfadeIdx++; pAdim=0; }
+        setTimeout(pGoster,1800);
+      } else { b.classList.add('yanlis'); b.disabled=true;
+        document.getElementById('pGeri').innerHTML='😅 <span class="gb-yanlis">'+A.neden+'</span>'; }
+    };
+    kap.appendChild(b);
+  });
+}
+pBaslat();
+
+/* ---------- 5) mini sınav ---------- */
+const sinav=[
+ {s:'12 + 8 = ▲ + 12 eşitliğinde ▲ kaçtır?', c:['12','8','20','4'], d:1},
+ {s:'Dengedeki bir eşitliğin HER İKİ tarafına 7 eklenirse ne olur?', c:['Eşitlik bozulur','Eşitlik korunur','Sol taraf büyür','Sonuç sıfırlanır'], d:1},
+ {s:'(14 + 8) + 10 = 14 + (8 + 10) eşitliği hangi özelliği gösterir?', c:['Değişme','Dağılma','Birleşme','Öncelik'], d:2},
+ {s:'6 × (10 − 2) işlemi dağılma özelliğiyle nasıl yazılır?', c:['6×10 − 6×2','6×10 + 6×2','6 − 10×2','60 − 2'], d:0},
+ {s:'4² üslü ifadesinin değeri kaçtır?', c:['8','16','24','44'], d:1},
+ {s:'3³ nasıl okunur ve değeri kaçtır?', c:['Üçün karesi, 9','Üç çarpı üç, 6','Üçün küpü, 27','Otuz üç, 33'], d:2},
+ {s:'İşlem önceliği sırası hangisidir?', c:['Toplama → çarpma → parantez','Parantez → üs → çarpma/bölme → toplama/çıkarma','Soldan sağa ne varsa','Üs → parantez → toplama'], d:1},
+ {s:'2 + 3 × 4 işleminin sonucu kaçtır?', c:['20','14','24','9'], d:1}
+];
+let qIdx=0,qPuan=0,qSira=[];
+function sinavBaslat(){ qIdx=0;qPuan=0;qSira=karistir(sinav);document.getElementById('qPuan').textContent=0; sinavGoster(); }
+function sinavGoster(){
+  if(qIdx>=qSira.length){ document.getElementById('sinavSecenek').innerHTML='';
+    document.getElementById('sinavSoru').innerHTML='🏁 Sınav bitti! Toplam <b>'+qPuan+'</b> puan.';
+    document.getElementById('qGeri').innerHTML='<button class="tekrar" onclick="sinavBaslat()">Tekrar Çöz 🔄</button>'; return; }
+  const q=qSira[qIdx];
+  document.getElementById('qNo').textContent=qIdx+1;
+  document.getElementById('sinavSoru').textContent=q.s;
+  document.getElementById('qGeri').textContent='';
+  const kap=document.getElementById('sinavSecenek'); kap.innerHTML='';
+  q.c.forEach((c,i)=>{
+    const b=document.createElement('button'); b.textContent=c;
+    b.onclick=()=>{
+      if(i===q.d){ b.classList.add('dogru'); qPuan+=10; document.getElementById('qPuan').textContent=qPuan;
+        document.getElementById('qGeri').innerHTML='🎉 <span class="gb-dogru">Süpersin!</span>'; }
+      else { b.classList.add('yanlis');
+        document.getElementById('qGeri').innerHTML='😅 <span class="gb-yanlis">Doğru cevap: '+q.c[q.d]+'</span>'; }
+      kap.querySelectorAll('button').forEach(x=>x.disabled=true);
+      qIdx++; setTimeout(sinavGoster,1500);
+    };
+    kap.appendChild(b);
+  });
+}
+sinavBaslat();
+</script>
+</body>
+</html>
