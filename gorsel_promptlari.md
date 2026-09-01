@@ -205,12 +205,12 @@
 # 📗 2. DÖNEM
 
 ## 4. TEMA / KONU 1 — Kesirleri Farklı Biçimlerde Temsil Etme
-### Hikaye: "Üç Ceketli Sayılar" (`tema4-konu1-kesir-temsil/`)
+### Hikaye: "Sayıların Üç Dili" (`tema4-konu1-kesir-temsil/`)
 
 **SAHNE SABİTLERİ (her prompta aynen ekle):** Sayfa 1 tren hattı yanındaki çiçekli ÇAYIR'da piknik; sayfa 2-4 NALBUR DÜKKÂNI içinde ve önünde geçer (tanımı yapıştır). Dükkân içi sabittir: ahşap tezgâh, üzerinde eski model gümüş yazar kasa ve bozuk para gözü, raflarda kovalar/fırçalar/mandal kolileri. Matematik odağı: yarım ekmekler, bozuk paralar (madenî kuruşlar), fiyat etiketleri (üzerinde yazı/rakam YOK — boş renkli kartlar) ve camdaki büyük indirim tabelası (boş turuncu tabela). Görsellerde hiçbir yazı/rakam yok.
 
 ### 1) `assets/t4k1_kapak.png` — Kitap kapağı
-> [ORTAK STİL + SAHNE SABİTLERİ + KAHRAMAN tanımı + NALBUR DÜKKÂNI tanımı] Dükkânın önü; camda kocaman boş TURUNCU indirim tabelası asılı. KAHRAMAN önde, bir elinde etiket tabancası/boş etiket destesi, diğer elinde havaya kaldırdığı büyük madenî para; yüzünde "bu üçü aynı şey mi?" şaşkın-meraklı ifade. Önündeki tezgâhta üç eş kova yan yana, her birinin üstünde farklı renkte boş etiket kartı (yeşil, mavi, turuncu — üç ceket hissi). Alt üçte birlik alan başlık için sade. Kamera: hafif alçak açı.
+> [ORTAK STİL + SAHNE SABİTLERİ + KAHRAMAN tanımı + NALBUR DÜKKÂNI tanımı] Dükkânın önü; camda kocaman boş TURUNCU indirim tabelası asılı. KAHRAMAN önde, bir elinde etiket tabancası/boş etiket destesi, diğer elinde havaya kaldırdığı büyük madenî para; yüzünde "bu üçü aynı şey mi?" şaşkın-meraklı ifade. Önündeki tezgâhta üç eş kova yan yana, her birinin üstünde farklı renkte boş etiket kartı (yeşil, mavi, turuncu — üç dil hissi). Alt üçte birlik alan başlık için sade. Kamera: hafif alçak açı.
 
 ### 2) `assets/t4k1_sayfa1.png` — Çayırda piknik
 > [ORTAK STİL + SAHNE SABİTLERİ + KAHRAMAN, DEDE, ELİF, EMRE, AYŞE, MÜBECCEL TEYZE tanımları] Tren hattı yanındaki gelincikli ÇAYIR, öğlen güneşi; yere serilmiş büyük kareli piknik örtüsü. Örtünün ortasında ekmek sepeti: İKİYE BÖLÜNMÜŞ yarım ekmekler net görünüyor (kesir odağı). KAHRAMAN elinde yarım ekmek, parmaklarıyla sayıyor, kafasında hesap. DEDE mangal başında köfte çeviriyor. MÜBECCEL TEYZE (balkonsuz, piknikte!) termosdan çay dolduruyor. ELİF ve AYŞE gülüşüyor, EMRE ağzında kocaman köfte ekmek. Arkada tren geçiyor. Kamera: örtüyü gösteren 45 derece üstten.
