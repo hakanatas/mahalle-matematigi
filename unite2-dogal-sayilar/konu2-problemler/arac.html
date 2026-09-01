@@ -52,7 +52,8 @@ nav .geri{background:linear-gradient(135deg,var(--color-gold-light),var(--color-
 .soruMetin .islem{font-family:var(--font-accent);font-size:1.9rem;font-weight:900;color:var(--color-indigo);display:block;margin-top:.4rem}
 .tekrar{margin-top:var(--space-sm);font-family:var(--font-headings);font-weight:700;font-size:1.1rem;padding:.8rem 1.8rem;border:none;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold));color:#fff;box-shadow:0 0 15px var(--color-gold-glow);transition:var(--transition-smooth)}
 .tekrar:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--color-gold)}
-input[type=range]{width:280px;accent-color:var(--color-emerald);height:28px}
+.tahminGiris{font-family:var(--font-accent);font-size:1.8rem;font-weight:900;color:var(--color-indigo);text-align:center;width:180px;padding:.3rem .6rem;border:3px solid var(--color-emerald);border-radius:var(--radius-sm);background:#fff}
+.tahminGiris:focus{outline:none;border-color:var(--color-gold)}
 .buyukDeger{font-family:var(--font-accent);font-size:1.8rem;font-weight:900;color:var(--color-indigo);text-align:center;margin-top:var(--space-xs)}
 /* problem sihirbazı */
 .problemKart{background:rgba(255,255,255,.85);border:1px solid var(--border-glass);border-left:6px solid var(--color-indigo);border-radius:var(--radius-md);padding:var(--space-md);max-width:880px;margin:0 auto var(--space-sm);font-size:1.05rem}
@@ -95,8 +96,7 @@ footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);fo
     <div class="skorbar"><span>⭐ Puan: <b id="tPuan">0</b></span><span>❓ Soru: <b id="tNo">1</b>/8</span></div>
     <div class="soruMetin">Sonucu TAHMİN et — hesaplamak yok, yuvarlamak var! 🎯<span class="islem" id="tIslem"></span></div>
     <div style="text-align:center;margin-top:12px">
-      <input type="range" id="tSlider" min="0" max="1000" value="500" oninput="tGosterGuncelle()">
-      <div class="buyukDeger">Tahminim: <span id="tGoster">500</span></div>
+      <div class="buyukDeger">Tahminim: <input type="number" id="tGiris" class="tahminGiris" min="0" inputmode="numeric" placeholder="?" onkeydown="if(event.key==='Enter')tahminEt()"></div>
       <button class="tekrar" id="tBtn" onclick="tahminEt()">Tahmin Et! 🎯</button>
     </div>
     <div class="geribildirim" id="tGeri"></div>
@@ -210,7 +210,6 @@ zBaslat();
 
 /* ---------- 2) tahmin ustası ---------- */
 let tIdx=0,tPuan=0,tGercek=0;
-function tGosterGuncelle(){ document.getElementById('tGoster').textContent=noktali(+document.getElementById('tSlider').value); }
 function tBaslat(){ tIdx=0;tPuan=0;document.getElementById('tPuan').textContent=0;
   document.getElementById('tBtn').disabled=false; tSoru(); }
 function tSoru(){
@@ -219,23 +218,27 @@ function tSoru(){
     document.getElementById('tBtn').disabled=true; return; }
   document.getElementById('tNo').textContent=tIdx+1;
   document.getElementById('tGeri').textContent='';
+  document.getElementById('tBtn').disabled=false;
   const tip=Math.floor(Math.random()*3);
   let m;
   if(tip===0){ const a=150+Math.floor(Math.random()*700), b=80+Math.floor(Math.random()*600); m=a+' + '+b; tGercek=a+b; }
   else if(tip===1){ const a=500+Math.floor(Math.random()*500), b=100+Math.floor(Math.random()*380); m=a+' − '+b; tGercek=a-b; }
   else { const a=15+Math.floor(Math.random()*80), b=4+Math.floor(Math.random()*8); m=a+' × '+b; tGercek=a*b; }
   document.getElementById('tIslem').textContent=m+' ≈ ?';
-  const sl=document.getElementById('tSlider');
-  sl.min=Math.max(0,Math.floor(tGercek*0.3)); sl.max=Math.ceil(tGercek*1.7); sl.value=Math.floor((+sl.min + +sl.max)/2);
-  tGosterGuncelle();
+  document.getElementById('tGiris').value='';
 }
 function tahminEt(){
-  const tahmin=+document.getElementById('tSlider').value;
+  if(document.getElementById('tBtn').disabled) return;
+  const giris=document.getElementById('tGiris').value.trim();
+  if(giris===''||isNaN(+giris)){
+    document.getElementById('tGeri').innerHTML='<span class="gb-yanlis">✏️ Önce tahminini yaz!</span>'; return; }
+  const tahmin=+giris;
   const fark=Math.abs(tahmin-tGercek), oran=fark/tGercek;
   let p=0,msj='';
   if(oran<=0.05){p=20;msj='🎯 Usta tahmini! (%5 içinde)';}
   else if(oran<=0.15){p=10;msj='👍 Güzel yuvarlamışsın!';}
   else msj='😅 Biraz uzak kaldı!';
+  document.getElementById('tBtn').disabled=true;
   tPuan+=p; document.getElementById('tPuan').textContent=tPuan;
   document.getElementById('tGeri').innerHTML='<span class="'+(p>0?'gb-dogru':'gb-yanlis')+'">'+msj+' Gerçek sonuç: '+noktali(tGercek)+' → +'+p+' puan</span>';
   tIdx++; setTimeout(tSoru,2000);
