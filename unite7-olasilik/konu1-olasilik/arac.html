@@ -40,7 +40,7 @@ canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255
 .bilgi b{color:var(--color-gold-dark)}
 .skorbar{display:flex;justify-content:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
 .skorbar span{font-family:var(--font-headings);font-weight:700;font-size:1.05rem;background:rgba(255,255,255,.8);border:1px solid var(--border-glass);padding:.5rem 1.3rem;border-radius:22px;color:var(--color-gold-dark);box-shadow:0 0 12px var(--color-gold-glow)}
-.secenekler{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
+.secenekler{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-xs);max-width:760px;margin:var(--space-sm) auto 0}
 .secenekler button{font-family:var(--font-main);font-weight:600;font-size:1rem;padding:.9rem 1rem;border-radius:var(--radius-sm);cursor:pointer;background:rgba(255,255,255,.85);color:var(--color-text-main);border:1px solid var(--border-glass);transition:var(--transition-smooth)}
 .secenekler button:hover:not(:disabled){transform:translateY(-2px);border-color:var(--color-emerald);color:var(--color-emerald);box-shadow:0 0 12px rgba(16,185,129,.2)}
 .secenekler button.dogru{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark));color:#fff!important;border-color:transparent;animation:zipla .45s}
@@ -60,6 +60,7 @@ canvas.tuvalC{display:block;margin:0 auto;max-width:100%;background:rgba(255,255
 input[type=range]{width:150px;accent-color:var(--color-emerald);height:26px}
 footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
 @media(max-width:640px){header h1{font-size:1.4rem}}
+@media (max-width:560px){ .secenekler{grid-template-columns:1fr !important} }
 </style>
 </head>
 <body>
@@ -70,7 +71,7 @@ footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);fo
     <p>7. Tema · Veriden Olasılığa — Olasılık Spektrumu, Kesin ve İmkânsız Olaylar, Adil Oyun</p>
   </header>
   <nav>
-    <a href="../index.html" style="text-decoration:none"><button>🏠 Ana Sayfa</button></a>
+    <a href="../index.html" style="text-decoration:none"><button>🏠 Ünite Sayfası</button></a>
     <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
     <button class="aktif" onclick="sayfaAc(0,this)">🌈 Olasılık Spektrumu</button>
     <button onclick="sayfaAc(1,this)">🎒 Torba Deneyi</button>
@@ -86,7 +87,7 @@ footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);fo
       <label style="color:#4338ca">🎯 Olasılık: <input type="range" id="spV" min="0" max="100" value="50" oninput="spektrumCiz()"> <b id="spVV">0,50</b></label>
     </div>
     <canvas class="tuvalC" id="spTuval" width="860" height="300"></canvas>
-    <div class="secenekler" id="spOrnek" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));max-width:880px"></div>
+    <div class="secenekler" id="spOrnek" style="max-width:880px"></div>
     <div class="bilgi"><b>Olasılık spektrumu:</b> Bir olayın olasılığı <b>0 ile 1 arasındadır</b> (0 ve 1 dâhil). 0 = imkânsız (%0), 1 = kesin (%100), 1/2 = eşit olasılık (%50). 0'a yakınsa <b>az olası</b>, 1'e yakınsa <b>çok olası</b>. Aynı değer kesirle, ondalıkla veya yüzdeyle yazılabilir!</div>
   </div>
 

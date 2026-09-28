@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1. Ünite · Geometrik Şekiller | Mahalle Matematiği</title>
-<meta name="description" content="MEB 5. sınıf matematik 1. ünite: Geometrik Şekiller — interaktif mahalle hikayeleri ve dijital araçlar.">
+<title>Öğretmen Paneli | Mahalle Matematiği</title>
+<meta name="robots" content="noindex, nofollow">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&family=Comfortaa:wght@400;600;700&display=swap');
 :root {
@@ -48,72 +48,107 @@ header p{font-size:1.02rem;color:var(--color-text-muted);margin-top:8px;max-widt
 .uniteGezinti{display:flex;justify-content:space-between;gap:.5rem;margin-top:var(--space-lg);flex-wrap:wrap}
 footer{text-align:center;padding:var(--space-lg) 0 var(--space-sm);font-size:.85rem;color:var(--color-text-muted)}
 @media(max-width:640px){header h1{font-size:1.7rem}}
+.ogrUyari{max-width:1100px;margin:0 auto var(--space-md);background:rgba(255,255,255,.92);border:2px dashed var(--color-gold);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);font-size:.95rem;color:var(--color-text-muted)}
+.ogrUyari b{color:var(--color-gold-dark)}
+.adresKutu{margin-top:.6rem;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;color:var(--color-text-muted);background:rgba(99,102,241,.07);border-radius:var(--radius-sm);padding:.45rem .6rem;word-break:break-all}
+.kopyaBtn{border:none;font-family:var(--font-headings)}
+.kopyaBtn.ok{background:linear-gradient(135deg,var(--color-emerald),var(--color-emerald-dark))}
 </style>
 </head>
 <body>
 <canvas id="arkaplanCanvas"></canvas>
 
 <div class="sayfaKap">
+  <div class="ogrUyari">
+    🔒 <b>ÖĞRETMEN PANELİ</b> — Bu adres yalnızca sana özeldir, öğrencilerle <b>paylaşma</b>. Öğrencilere ödev verirken her ünitenin kendi bağlantısını kullan:
+    aşağıdaki karttan <b>🔗 Ödev Linkini Kopyala</b> düğmesine bas, çıkan adresi sınıfa gönder. O bağlantıyla öğrenci yalnızca o üniteyi görür, diğerlerine geçemez.
+  </div>
   <header>
-    <div class="ustRozet">📐 1. ÜNİTE · 5 KONU</div>
-    <h1>📐 <span class="vurgu">Geometrik Şekiller</span></h1>
-    <p>Mahallede turnuva heyecanı! Futbol sahasından börek tepsisine, sokak tabelalarından arı peteklerine: nokta, doğru, açı, çokgen ve üçgenlerin macerası.</p>
+    <h1>🏘️ MAHALLE <span class="vurgu">MATEMATİĞİ</span></h1>
+    <p>5. sınıf matematik, bir mahallenin başına gelenlerle öğrenilir! 7 ünitenin her birinde hikaye kitapları ve interaktif araçlar seni bekliyor. Beş unvanlı kahramanımız, Elif, dede, muhtar ve Mübeccel Teyze iş başında.</p>
   </header>
 
   <div class="kartlar">
     <div class="kart">
-      <img class="kapakImg" src="konu1-kayip-cizgiler/assets/t1k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">⚽</div>
-      <div class="konu">KONU 1 · TEMEL GEOMETRİK ŞEKİLLER</div>
-      <h3>Mahalle Turnuvası ve Kayıp Çizgiler</h3>
-      <p>Boş arsadan futbol sahası çıkarmak kolay mı? Nokta, doğru, ışın, çember ve dikme iş başında.</p>
+      <img class="kapakImg" src="unite1-geometrik-sekiller/konu1-kayip-cizgiler/assets/t1k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">📐</div>
+      <div class="konu">1. ÜNİTE · 5 KONU</div>
+      <h3>Geometrik Şekiller</h3>
+      <p>Mahalle Turnuvası ve Kayıp Çizgiler · Eşit Dilim Davası · Sokağın İki Adı · Altıgen Peşinde · Üç Köşeli Zafer</p>
       <div class="butonlar">
-        <a class="btn btn--hikaye" href="konu1-kayip-cizgiler/index.html">📖 Hikaye</a>
-        <a class="btn btn--arac" href="konu1-kayip-cizgiler/arac.html">🎮 Araçlar</a>
+        <a class="btn btn--hikaye" href="unite1-geometrik-sekiller/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite1-geometrik-sekiller/">🔗 Ödev Linkini Kopyala</button>
       </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite1-geometrik-sekiller/</div>
     </div>
     <div class="kart">
-      <img class="kapakImg" src="konu2-acilar/assets/t1k2_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🥧</div>
-      <div class="konu">KONU 2 · AÇILAR VE AÇI ÖLÇME</div>
-      <h3>Eşit Dilim Davası</h3>
-      <p>Dev börek tepsisi, sekiz aç çocuk ve bir açıölçer. Derece, eş açılar ve açı çeşitleri.</p>
+      <img class="kapakImg" src="unite2-dogal-sayilar/konu1-buyuk-sayilar/assets/t2k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🔢</div>
+      <div class="konu">2. ÜNİTE · 2 KONU</div>
+      <h3>Sayılar ve Nicelikler: Doğal Sayılar</h3>
+      <p>Gökyüzü Gecesi ve Kayıp Sıfırlar · Kermes Hesabı</p>
       <div class="butonlar">
-        <a class="btn btn--hikaye" href="konu2-acilar/index.html">📖 Hikaye</a>
-        <a class="btn btn--arac" href="konu2-acilar/arac.html">🎮 Araçlar</a>
+        <a class="btn btn--hikaye" href="unite2-dogal-sayilar/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite2-dogal-sayilar/">🔗 Ödev Linkini Kopyala</button>
       </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite2-dogal-sayilar/</div>
     </div>
     <div class="kart">
-      <img class="kapakImg" src="konu3-dogrular/assets/t1k3_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🛤️</div>
-      <div class="konu">KONU 3 · DOĞRULARIN DURUMLARI</div>
-      <h3>Sokağın İki Adı</h3>
-      <p>Bir sokak, iki tabela, şaşkın bir kargocu. Paralel, kesişen, çakışık doğrular; ters ve komşu açılar.</p>
+      <img class="kapakImg" src="unite3-geometrik-nicelikler/konu1-cevre-alan/assets/t3k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">📏</div>
+      <div class="konu">3. ÜNİTE · 1 KONU</div>
+      <h3>Geometrik Nicelikler</h3>
+      <p>Yirmi Dört Metre Çit</p>
       <div class="butonlar">
-        <a class="btn btn--hikaye" href="konu3-dogrular/index.html">📖 Hikaye</a>
-        <a class="btn btn--arac" href="konu3-dogrular/arac.html">🎮 Araçlar</a>
+        <a class="btn btn--hikaye" href="unite3-geometrik-nicelikler/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite3-geometrik-nicelikler/">🔗 Ödev Linkini Kopyala</button>
       </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite3-geometrik-nicelikler/</div>
     </div>
     <div class="kart">
-      <img class="kapakImg" src="konu4-cokgenler/assets/t1k4_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🐝</div>
-      <div class="konu">KONU 4 · ÇOKGENLER</div>
-      <h3>Altıgen Peşinde</h3>
-      <p>Çamur deryası dükkân önü ve Kadir Usta'nın şekil sandığı. Kenar, köşe, köşegen ve arıların sırrı.</p>
+      <img class="kapakImg" src="unite4-kesirler/konu1-kesir-temsil/assets/t4k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🍰</div>
+      <div class="konu">4. ÜNİTE · 2 KONU</div>
+      <h3>Sayılar ve Nicelikler: Kesirler</h3>
+      <p>Üç Ceketli Sayılar · Adalet Terazisi</p>
       <div class="butonlar">
-        <a class="btn btn--hikaye" href="konu4-cokgenler/index.html">📖 Hikaye</a>
-        <a class="btn btn--arac" href="konu4-cokgenler/arac.html">🎮 Araçlar</a>
+        <a class="btn btn--hikaye" href="unite4-kesirler/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite4-kesirler/">🔗 Ödev Linkini Kopyala</button>
       </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite4-kesirler/</div>
     </div>
     <div class="kart">
-      <img class="kapakImg" src="konu5-ucgenler/assets/t1k5_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🔺</div>
-      <div class="konu">KONU 5 · ÜÇGEN VE ÜÇGEN İNŞASI</div>
-      <h3>Üç Köşeli Zafer</h3>
-      <p>Final günü flama krizi! Üçgen çeşitleri, 180 derecenin sırrı ve pergelle kusursuz üçgen inşası.</p>
+      <img class="kapakImg" src="unite5-istatistik/konu1-istatistik-anket/assets/t5k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">📊</div>
+      <div class="konu">5. ÜNİTE · 2 KONU</div>
+      <h3>İstatistiksel Araştırma Süreci</h3>
+      <p>Mahalle Anketi · Yalancı Grafik</p>
       <div class="butonlar">
-        <a class="btn btn--hikaye" href="konu5-ucgenler/index.html">📖 Hikaye</a>
-        <a class="btn btn--arac" href="konu5-ucgenler/arac.html">🎮 Araçlar</a>
+        <a class="btn btn--hikaye" href="unite5-istatistik/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite5-istatistik/">🔗 Ödev Linkini Kopyala</button>
       </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite5-istatistik/</div>
+    </div>
+    <div class="kart">
+      <img class="kapakImg" src="unite6-cebirsel-dusunme/konu1-islem-ozellikleri/assets/t6k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">⚖️</div>
+      <div class="konu">6. ÜNİTE · 2 KONU</div>
+      <h3>İşlemlerle Cebirsel Düşünme</h3>
+      <p>Dede'nin Terazisi · Halının Şifresi</p>
+      <div class="butonlar">
+        <a class="btn btn--hikaye" href="unite6-cebirsel-dusunme/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite6-cebirsel-dusunme/">🔗 Ödev Linkini Kopyala</button>
+      </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite6-cebirsel-dusunme/</div>
+    </div>
+    <div class="kart">
+      <img class="kapakImg" src="unite7-olasilik/konu1-olasilik/assets/t7k1_kapak.png" alt="" onerror="this.remove()"><div class="ikon">🎲</div>
+      <div class="konu">7. ÜNİTE · 1 KONU</div>
+      <h3>Veriden Olasılığa</h3>
+      <p>Şans Torbası</p>
+      <div class="butonlar">
+        <a class="btn btn--hikaye" href="unite7-olasilik/index.html">🚪 Üniteyi Aç</a>
+        <button class="btn btn--arac kopyaBtn" data-url="https://hakanatas.github.io/mahalle-matematigi/unite7-olasilik/">🔗 Ödev Linkini Kopyala</button>
+      </div>
+      <div class="adresKutu">https://hakanatas.github.io/mahalle-matematigi/unite7-olasilik/</div>
     </div>
   </div>
 
-  <footer>MEB 5. Sınıf Matematik · Mahalle Matematiği · 1. Ünite 💛</footer>
+  <footer>MEB 5. Sınıf Matematik · 7 Ünite · 15 Konu · İnteraktif Hikaye Serisi 💛</footer>
 </div>
 
 <script>
@@ -145,6 +180,18 @@ footer{text-align:center;padding:var(--space-lg) 0 var(--space-sm);font-size:.85
     requestAnimationFrame(dongu); }
   requestAnimationFrame(dongu);
 })();
+</script>
+<script>
+document.querySelectorAll('.kopyaBtn').forEach(b=>{
+  b.addEventListener('click', async ()=>{
+    const u=b.dataset.url, eski=b.textContent;
+    try{ await navigator.clipboard.writeText(u); }
+    catch(e){ const t=document.createElement('textarea'); t.value=u; document.body.appendChild(t); t.select();
+              try{document.execCommand('copy');}catch(_){ prompt('Linki kopyala:', u); } t.remove(); }
+    b.textContent='✅ Kopyalandı!'; b.classList.add('ok');
+    setTimeout(()=>{ b.textContent=eski; b.classList.remove('ok'); },1800);
+  });
+});
 </script>
 </body>
 </html>
