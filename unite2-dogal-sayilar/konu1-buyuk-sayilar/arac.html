@@ -84,6 +84,14 @@ footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);fo
 @media(max-width:640px){header h1{font-size:1.4rem}table.btablo .rakam{font-size:1.15rem}}
 @media (max-width:560px){ .secenekler{grid-template-columns:1fr !important} }
 </style>
+<style>/*erisim-kilidi*/
+html.erisim-yok body>*:not(.kilitMesaj){display:none!important}
+.kilitMesaj{display:none}
+html.erisim-yok .kilitMesaj{display:flex!important;min-height:85vh;align-items:center;justify-content:center;padding:1.5rem}
+.kilitMesaj>div{max-width:520px;background:rgba(255,255,255,.95);border:1px solid rgba(99,102,241,.25);border-left:6px solid #c2410c;border-radius:20px;padding:2rem 1.8rem;text-align:center;font-family:'Comfortaa',sans-serif;color:#475569;line-height:1.7;box-shadow:0 8px 32px rgba(31,38,135,.12)}
+.kilitMesaj b{display:block;font-family:'Baloo 2','Comfortaa',sans-serif;font-size:1.4rem;color:#0f172a;margin:.4rem 0 .5rem}
+html.erisim-tek nav{display:none!important}
+</style><script>/*erisim-kilidi*/(function(){var K={"ddb918": "tam", "28f184": 0, "95902c": 1, "caec0d": 2, "d6789c": 3};var k=new URLSearchParams(location.search).get('k');var v=(k&&Object.prototype.hasOwnProperty.call(K,k))?K[k]:undefined;var h=document.documentElement;if(v===undefined){h.classList.add('erisim-yok');}else if(typeof v==='number'){h.classList.add('erisim-tek');}document.addEventListener('DOMContentLoaded',function(){if(v===undefined){var d=document.createElement('div');d.className='kilitMesaj';d.innerHTML='<div><div style="font-size:2.6rem">🔒</div><b>Bu sayfa kilitli</b>Bu etkinliği açmak için öğretmeninin sana verdiği bağlantıyı kullan. 💛</div>';document.body.appendChild(d);}else if(typeof v==='number'){var b=document.querySelector('nav button[onclick="sayfaAc('+v+',this)"]');if(b&&typeof sayfaAc==='function'){sayfaAc(v,b);window.scrollTo(0,0);}}});})();</script>
 </head>
 <body>
 <canvas id="arkaplanCanvas"></canvas>
@@ -93,8 +101,6 @@ footer{text-align:center;padding:var(--space-sm);font-family:var(--font-main);fo
     <p>2. Tema · Çok Basamaklı Doğal Sayılar — Bölükler, Basamaklar, Okunuş ve Basamak Değeri</p>
   </header>
   <nav>
-    <a href="../index.html" style="text-decoration:none"><button>🏠 Ünite Sayfası</button></a>
-    <a href="index.html" style="text-decoration:none"><button class="geri">📖 Hikayeye Dön</button></a>
     <button class="aktif" onclick="sayfaAc(0,this)">🔍 Basamak Tablosu</button>
     <button onclick="sayfaAc(1,this)">🧱 Bölüklerden Sayı Kur</button>
     <button onclick="sayfaAc(2,this)">🎯 Okunuş Avı</button>

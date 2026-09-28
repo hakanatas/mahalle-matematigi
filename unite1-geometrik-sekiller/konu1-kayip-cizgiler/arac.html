@@ -267,6 +267,14 @@ footer {
 }
 @media (max-width:560px){ .secenekler{grid-template-columns:1fr !important} }
 </style>
+<style>/*erisim-kilidi*/
+html.erisim-yok body>*:not(.kilitMesaj){display:none!important}
+.kilitMesaj{display:none}
+html.erisim-yok .kilitMesaj{display:flex!important;min-height:85vh;align-items:center;justify-content:center;padding:1.5rem}
+.kilitMesaj>div{max-width:520px;background:rgba(255,255,255,.95);border:1px solid rgba(99,102,241,.25);border-left:6px solid #c2410c;border-radius:20px;padding:2rem 1.8rem;text-align:center;font-family:'Comfortaa',sans-serif;color:#475569;line-height:1.7;box-shadow:0 8px 32px rgba(31,38,135,.12)}
+.kilitMesaj b{display:block;font-family:'Baloo 2','Comfortaa',sans-serif;font-size:1.4rem;color:#0f172a;margin:.4rem 0 .5rem}
+html.erisim-tek nav{display:none!important}
+</style><script>/*erisim-kilidi*/(function(){var K={"e3508a": "tam", "71cbb2": 0, "5d7943": 1, "b66d3e": 2, "355b63": 3};var k=new URLSearchParams(location.search).get('k');var v=(k&&Object.prototype.hasOwnProperty.call(K,k))?K[k]:undefined;var h=document.documentElement;if(v===undefined){h.classList.add('erisim-yok');}else if(typeof v==='number'){h.classList.add('erisim-tek');}document.addEventListener('DOMContentLoaded',function(){if(v===undefined){var d=document.createElement('div');d.className='kilitMesaj';d.innerHTML='<div><div style="font-size:2.6rem">🔒</div><b>Bu sayfa kilitli</b>Bu etkinliği açmak için öğretmeninin sana verdiği bağlantıyı kullan. 💛</div>';document.body.appendChild(d);}else if(typeof v==='number'){var b=document.querySelector('nav button[onclick="sayfaAc('+v+',this)"]');if(b&&typeof sayfaAc==='function'){sayfaAc(v,b);window.scrollTo(0,0);}}});})();</script>
 </head>
 <body>
 <canvas id="arkaplanCanvas"></canvas>
@@ -276,8 +284,6 @@ footer {
     <p>1. Tema · Temel Geometrik Şekiller — Nokta, Doğru, Işın, Çember, Dikme</p>
   </header>
   <nav>
-    <a href="../index.html" style="text-decoration:none"><button>🏠 Ünite Sayfası</button></a>
-    <a href="index.html" style="text-decoration:none"><button style="background:linear-gradient(135deg,var(--color-gold-light),var(--color-gold)); color:#fff; border-color:transparent; box-shadow:0 0 15px var(--color-gold-glow)">📖 Hikayeye Dön</button></a>
     <button class="aktif" onclick="sayfaAc(0,this)">✏️ Çizim Atölyesi</button>
     <button onclick="sayfaAc(1,this)">⭕ Pergel &amp; Çember</button>
     <button onclick="sayfaAc(2,this)">🎯 Sembol Avı</button>

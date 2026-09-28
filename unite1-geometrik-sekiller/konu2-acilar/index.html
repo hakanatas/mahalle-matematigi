@@ -69,6 +69,14 @@ body{padding:var(--space-md) var(--space-sm)}
 footer{text-align:center;padding:var(--space-sm);font-size:.85rem;color:var(--color-text-muted);border-top:1px solid var(--border-glass)}
 @media(max-width:640px){#kapak h1{font-size:1.5rem}.sayfaK{padding:var(--space-md)}}
 </style>
+<style>/*erisim-kilidi*/
+html.erisim-yok body>*:not(.kilitMesaj){display:none!important}
+.kilitMesaj{display:none}
+html.erisim-yok .kilitMesaj{display:flex!important;min-height:85vh;align-items:center;justify-content:center;padding:1.5rem}
+.kilitMesaj>div{max-width:520px;background:rgba(255,255,255,.95);border:1px solid rgba(99,102,241,.25);border-left:6px solid #c2410c;border-radius:20px;padding:2rem 1.8rem;text-align:center;font-family:'Comfortaa',sans-serif;color:#475569;line-height:1.7;box-shadow:0 8px 32px rgba(31,38,135,.12)}
+.kilitMesaj b{display:block;font-family:'Baloo 2','Comfortaa',sans-serif;font-size:1.4rem;color:#0f172a;margin:.4rem 0 .5rem}
+html.erisim-tek nav{display:none!important}
+</style><script>/*erisim-kilidi*/(function(){var K={"aba289": "hikaye"};var k=new URLSearchParams(location.search).get('k');var v=(k&&Object.prototype.hasOwnProperty.call(K,k))?K[k]:undefined;var h=document.documentElement;if(v===undefined){h.classList.add('erisim-yok');}else if(typeof v==='number'){h.classList.add('erisim-tek');}document.addEventListener('DOMContentLoaded',function(){if(v===undefined){var d=document.createElement('div');d.className='kilitMesaj';d.innerHTML='<div><div style="font-size:2.6rem">🔒</div><b>Bu sayfa kilitli</b>Bu etkinliği açmak için öğretmeninin sana verdiği bağlantıyı kullan. 💛</div>';document.body.appendChild(d);}else if(typeof v==='number'){var b=document.querySelector('nav button[onclick="sayfaAc('+v+',this)"]');if(b&&typeof sayfaAc==='function'){sayfaAc(v,b);window.scrollTo(0,0);}}});})();</script>
 </head>
 <body>
 <canvas id="arkaplanCanvas"></canvas>
@@ -83,8 +91,6 @@ footer{text-align:center;padding:var(--space-sm);font-size:.85rem;color:var(--co
     <img class="gorsel" src="assets/t1k2_kapak.png" alt="Dev tepsi börek başında açıölçer tutan çocuk" onerror="gorselYok(this,'t1k2_kapak.png')">
     <div style="display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap">
       <button class="btn" onclick="kitabiAc()">Kitabı Oku 📖</button>
-      <a class="btn btn--sade" href="arac.html">🎮 İnteraktif Araçlar</a>
-      <a class="btn btn--sade" href="../index.html">🏠 Ünite Sayfası</a>
     </div>
   </section>
 
@@ -195,7 +201,6 @@ footer{text-align:center;padding:var(--space-sm);font-size:.85rem;color:var(--co
         </div>
         <div style="display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap">
           <button class="btn btn--altin" onclick="gorevBaslat()">Tekrar Oyna 🔄</button>
-          <a class="btn" href="arac.html">Sıra sende: Açıölçer Atölyesi 🎮</a>
         </div>
       </div>
     </article>
