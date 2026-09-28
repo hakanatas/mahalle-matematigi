@@ -234,11 +234,11 @@ function sesDur(){ if('speechSynthesis' in window) speechSynthesis.cancel(); }
 
 /* ---------- görev ---------- */
 const gorevler=[
-  {soru:'Rapor 1: Bahçemiz 6 m × 6 m. Çevre uzunluğu kaç metre? (Çitimiz yetmiş mi?)', sec:['12','24','36','48'], d:1, ipucu:'Ç = 2 × (6 + 6)'},
-  {soru:'Rapor 2: Bahçenin alanı kaç metrekare?', sec:['12','24','36','66'], d:2, ipucu:'A = 6 × 6'},
-  {soru:'Rapor 3: İlk kurduğumuz 1 m × 11 m koridor bahçenin alanı kaçtı?', sec:['11','12','22','24'], d:0, ipucu:'A = 1 × 11'},
-  {soru:'Rapor 4: Her metrekareye 4 fide dikildi. 36 m² için kaç fide gerekti?', sec:['40','72','144','360'], d:2, ipucu:'36 × 4 — zihinden!'},
-  {soru:'Rapor 5: Maydanoz sırası 6 m² ; kalan domates alanı kaç m²?', sec:['42','32','24','30'], d:3, ipucu:'36 − 6'}
+  {soru:'Rapor 1: Bahçemiz 6 m × 6 m. Çevre uzunluğu kaç metre? (Çitimiz yetmiş mi?)', sec:['12','24','36','48'], d:1, ipucu:'Çevre = dört kenarın TOPLAMI. Çit bahçenin etrafını dolanır!'},
+  {soru:'Rapor 2: Bahçenin alanı kaç metrekare?', sec:['12','24','36','66'], d:2, ipucu:'Alan = en × boy. İçini dolduran birim kareleri düşün!'},
+  {soru:'Rapor 3: İlk kurduğumuz 1 m × 11 m koridor bahçenin alanı kaçtı?', sec:['11','12','22','24'], d:0, ipucu:'Koridor da bir dikdörtgen — alan formülü değişmez!'},
+  {soru:'Rapor 4: Her metrekareye 4 fide dikildi. 36 m² için kaç fide gerekti?', sec:['40','72','144','360'], d:2, ipucu:'Her metrekarede 4 fide varsa, alanla çarpmak gerek!'},
+  {soru:'Rapor 5: Maydanoz sırası 6 m² ; kalan domates alanı kaç m²?', sec:['42','32','24','30'], d:3, ipucu:'Toplam alandan maydanozun payını çıkar!'}
 ];
 let gIdx=0, gPuan=0;
 function gorevBaslat(){
